@@ -1,0 +1,41 @@
+\subsection{Data Storage \& Management}
+
+\subsubsection{Postgres}
+
+\begin{itemize}
+    \item \textbf{Đặc điểm}:
+    \begin{itemize}
+        \item Dữ liệu được lưu trữ trong các bảng với cấu trúc (schema) cố định.
+        \item Ràng buộc kiểu dữ liệu, khóa chính, khóa ngoại, ... giúp đảm bảo tính nhất quán.
+    \end{itemize}
+    \item \textbf{Ví dụ Code (SQL)}: 
+        \begin{lstlisting}[language=sql]
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);\end{lstlisting}
+\end{itemize}
+
+\noindent
+\subsubsection{MongoDB}
+
+\begin{itemize}
+    \item \textbf{Đặc điểm}:
+    \begin{itemize}
+        \item Dữ liệu được lưu dưới dạng document (JSON/BSON) trong các collection.
+        \item Schema linh hoạt, dễ dàng mở rộng với dữ liệu phi cấu trúc.
+    \end{itemize}
+    \item \textbf{Ví dụ Code (Mongo Shell)}: 
+        \begin{lstlisting}[language=java]
+db.users.insertOne({
+    name: "John Doe",
+    email: "john.doe@example.com"
+});\end{lstlisting}
+\end{itemize}
+
+\subsubsection{So sánh}
+\begin{itemize}
+    \item \textbf{Schema cố định so sánh linh hoạt}: \textbf{Postgres} yêu cầu định nghĩa cấu trúc dữ liệu trước, còn \textbf{MongoDB} cho phép lưu trữ dữ liệu không đồng nhất.
+    \item \textbf{Quản lý dữ liệu}: Các ràng buộc (constraints) mạnh mẽ của \textbf{Postgres} hỗ trợ tính toàn vẹn dữ liệu, trong khi \textbf{MongoDB} cung cấp tính mở rộng dễ dàng.
+\end{itemize}

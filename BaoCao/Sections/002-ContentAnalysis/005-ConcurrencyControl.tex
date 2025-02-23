@@ -1,0 +1,70 @@
+\subsection{Concurrency Control}
+
+Concurrency Control (Kiểm soát đồng thời) là cơ chế quản lý việc truy cập và thay đổi dữ liệu trong cơ sở dữ liệu khi có nhiều giao dịch (transactions) hoặc truy vấn diễn ra đồng thời. Mục đích chính của nó là đảm bảo rằng các thao tác đồng thời không gây ra xung đột, mất mát hoặc làm hỏng tính nhất quán của dữ liệu. Điều này được thực hiện thông qua các kỹ thuật và chiến lược như:
+
+\begin{itemize}
+    \item \textbf{Locking (Khóa dữ liệu)}: Cho phép một giao dịch khóa dữ liệu trong khi thực hiện các thay đổi, ngăn các giao dịch khác can thiệp vào dữ liệu đó trong thời gian khóa.
+    \item \textbf{Multi-Version Concurrency Control (MVCC)}: Cung cấp các phiên bản khác nhau của dữ liệu cho các giao dịch đọc và ghi, cho phép đọc dữ liệu mà không bị ảnh hưởng bởi các giao dịch ghi đang diễn ra. PostgreSQL sử dụng MVCC để giảm thiểu việc khóa dữ liệu.
+    \item \textbf{Optimistic Concurrency Control}: Giả định rằng các giao dịch không xung đột và kiểm tra sự mâu thuẫn chỉ khi giao dịch kết thúc, thích hợp với môi trường có ít xung đột.
+    \item \textbf{Timestamp Ordering}: Gán thời gian cho các giao dịch và sắp xếp thực hiện dựa trên thứ tự thời gian nhằm đảm bảo tính nhất quán.
+\end{itemize}
+
+\noindent
+\textbf{Khi nào cần chú ý đến Concurrency Control?}
+\begin{itemize}
+    \item \textbf{Hệ thống có nhiều người dùng}: Khi có nhiều giao dịch truy cập và cập nhật dữ liệu đồng thời, cần đảm bảo dữ liệu không bị xung đột.
+    \item \textbf{Giao dịch yêu cầu tính nhất quán cao}: Các hệ thống tài chính, ngân hàng hay thương mại điện tử yêu cầu tính toàn vẹn và nhất quán của dữ liệu, nên cần áp dụng cơ chế kiểm soát đồng thời chặt chẽ.
+    \item \textbf{Tránh hiện tượng "dirty read", "lost update", "non-repeatable read"}: Concurrency Control giúp ngăn chặn các lỗi do truy cập dữ liệu không đồng bộ.
+\end{itemize}
+
+Tóm lại, Concurrency Control là một thành phần quan trọng trong cơ sở dữ liệu, đảm bảo rằng ngay cả khi nhiều giao dịch diễn ra cùng lúc, dữ liệu luôn được bảo vệ và duy trì tính nhất quán.
+
+\subsubsection{Postgres}
+
+\begin{itemize}
+    \item \textbf{Đặc điểm}:
+    \begin{itemize}
+        \item Sử dụng MVCC (Multi-Version Concurrency Control) cho phép thực hiện nhiều giao dịch song song mà không gây blocking (không khóa toàn bộ bảng).
+    \end{itemize}
+    \item \textbf{Cách quản lý}:
+    \begin{itemize}
+        \item Người dùng không cần can thiệp trực tiếp, hệ thống tự động quản lý phiên bản dữ liệu.
+    \end{itemize}
+\end{itemize}
+
+\newpage
+
+\textbf{Ví dụ Code (SQL)}:
+
+Trong PostgreSQL (sử dụng MVCC):
+
+\begin{lstlisting}[language=sql]
+BEGIN;
+-- Giao dịch A đọc dữ liệu mà không ảnh hưởng đến giao dịch khác
+SELECT * FROM orders WHERE id = 1;
+-- Trong khi đó, giao dịch B có thể thay đổi dữ liệu của hàng đó, và PostgreSQL sẽ tạo ra một phiên bản riêng cho mỗi giao dịch.
+COMMIT;
+\end{lstlisting}
+
+\subsubsection{MongoDB}
+
+\begin{itemize}
+    \item \textbf{Đặc điểm}:
+    \begin{itemize}
+        \item Sử dụng cơ chế locking ở cấp độ document; mỗi thao tác cập nhật trên document được thực hiện atomically (nguyên tử).
+    \end{itemize}
+    \item \textbf{Cách quản lý}:
+    \begin{itemize}
+        \item Trong MongoDB, thao tác cập nhật trên một document đã đảm bảo tính nguyên tử nên không cần cấu hình thêm.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Ví dụ Code (Mongo Shell)}:
+\begin{lstlisting}[language=sql]
+// Cập nhật đơn giản, đảm bảo atomicity trên document
+db.accounts.updateOne({ _id: 1 }, { $inc: { balance: -100 } });
+\end{lstlisting}
+
+\subsubsection{So sánh}
+
+\textbf{Quy mô lock}: Postgres có thể quản lý lock ở mức bảng hoặc dòng thông qua MVCC, còn MongoDB chủ yếu tập trung vào lock ở cấp document, phù hợp với các ứng dụng yêu cầu tốc độ cao và cập nhật không đồng bộ.

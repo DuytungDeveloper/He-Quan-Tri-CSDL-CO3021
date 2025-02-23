@@ -1,0 +1,97 @@
+\subsection{Query Processing}
+
+Query Processing (Xử lý truy vấn) là quá trình chuyển đổi câu lệnh truy vấn do người dùng nhập (ví dụ: SQL trong các cơ sở dữ liệu quan hệ hay MQL trong MongoDB) thành một kế hoạch thực thi hiệu quả để truy xuất dữ liệu từ cơ sở dữ liệu. Quá trình này bao gồm một số bước chính:
+
+\begin{enumerate}
+    \item \textbf{Parsing (Phân tích cú pháp)}:
+    \begin{itemize}
+        \item Phân tích câu truy vấn để kiểm tra tính hợp lệ về cú pháp và đảm bảo rằng các từ khóa, tên bảng, tên trường, … được viết đúng theo quy tắc của ngôn ngữ truy vấn.
+    \end{itemize}
+    \item \textbf{Query Rewriting (Chuyển đổi truy vấn)}:
+    \begin{itemize}
+        \item Biến đổi câu truy vấn ban đầu thành dạng dễ tối ưu hóa hơn, chẳng hạn như đơn giản hóa các biểu thức logic hoặc chuyển đổi cấu trúc của câu truy vấn.
+    \end{itemize}
+    \item \textbf{Query Optimization (Tối ưu hóa truy vấn)}:
+    \begin{itemize}
+        \item Xác định kế hoạch thực thi tối ưu bằng cách cân nhắc nhiều phương án khác nhau. Hệ quản trị cơ sở dữ liệu sẽ dựa vào các thống kê dữ liệu, cấu trúc bảng, chỉ mục, … để lựa chọn chiến lược tốt nhất nhằm giảm thiểu thời gian và tài nguyên cần thiết cho truy vấn.
+    \end{itemize}
+    \item \textbf{Query Execution (Thực thi truy vấn)}:
+    \begin{itemize}
+        \item Thực hiện kế hoạch truy vấn đã được tối ưu hóa, truy xuất dữ liệu từ các bảng hoặc collections theo cách hiệu quả nhất.
+    \end{itemize}
+    \item \textbf{Formatting (Định dạng kết quả)}:
+    \begin{itemize}
+        \item Sau khi truy xuất dữ liệu, kết quả được định dạng lại và trả về cho người dùng hoặc ứng dụng theo yêu cầu.
+    \end{itemize}
+\end{enumerate}
+
+\noindent
+\textbf{Vai trò và Lợi ích của Query Processing}
+
+\begin{itemize}
+    \item Tăng hiệu năng truy xuất dữ liệu:
+    \begin{itemize}
+        \item Giúp giảm thiểu thời gian truy vấn thông qua tối ưu hóa kế hoạch thực thi.
+    \end{itemize}
+    \item Quản lý tài nguyên hiệu quả:
+    \begin{itemize}
+        \item Giúp hệ thống sử dụng CPU, bộ nhớ và I/O một cách hợp lý, tránh việc quét toàn bộ bảng không cần thiết.
+    \end{itemize}
+    \item Hỗ trợ truy vấn phức tạp:
+    \begin{itemize}
+        \item Cho phép xử lý các truy vấn có nhiều phép toán như join, subquery, aggregate… một cách hiệu quả.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Query Processing} đóng vai trò quan trọng trong việc đảm bảo rằng hệ thống cơ sở dữ liệu thực thi các truy vấn một cách nhanh chóng và hiệu quả, góp phần nâng cao hiệu năng tổng thể của ứng dụng.
+
+\subsubsection{Postgres}
+
+\textbf{Đặc điểm} : 
+\begin{itemize}
+    \item Sử dụng SQL, hỗ trợ  các truy vấn phức tạp như join, subquery, aggregate.
+    \item Có query optimizer mạnh mẽ giúp tối ưu thời gian thực thi.
+\end{itemize}
+
+\textbf{Ví dụ Code (SQL)}:
+
+\begin{lstlisting}[language=sql]
+SELECT u.name, o.order_date
+FROM users u
+JOIN orders o ON u.id = o.user_id
+WHERE u.email = 'john.doe@example.com';
+\end{lstlisting}
+
+
+\subsubsection{MongoDB}
+
+\textbf{Đặc điểm} : 
+\begin{itemize}
+    \item Sử dụng MongoDB Query Language (MQL) với cú pháp JSON-like.
+    \item Hỗ trợ các phép toán như find, aggregate (aggregation pipeline) để xử lý dữ liệu.
+\end{itemize}
+
+\textbf{Ví dụ Code (Mongo Shell)}:
+
+\begin{lstlisting}[language=sql]
+db.orders.aggregate([
+    {
+        $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user_info"
+        }
+    },
+    {
+        $match: { "user_info.email": "john.doe@example.com" }
+    }
+]);
+\end{lstlisting}
+
+\subsubsection{So sánh}
+
+\begin{itemize}
+    \item \textbf{Ngôn ngữ truy vấn}: SQL truyền thống của Postgres đối lập với MQL của MongoDB.
+    \item \textbf{Khả năng join}: Postgres hỗ trợ join trực tiếp qua SQL, trong khi MongoDB sử dụng aggregation pipeline để thực hiện join giữa các collection.
+\end{itemize}

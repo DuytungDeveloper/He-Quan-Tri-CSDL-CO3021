@@ -1,0 +1,75 @@
+\subsection{Transaction}
+
+Transaction (giao dịch) trong cơ sở dữ liệu là một đơn vị công việc gồm một hoặc nhiều thao tác được thực hiện như một khối duy nhất. Điều này có nghĩa là hoặc toàn bộ các thao tác trong giao dịch đều thành công, hoặc nếu có bất kỳ thao tác nào thất bại thì toàn bộ giao dịch sẽ bị hủy bỏ (rollback), giữ cho dữ liệu luôn ở trạng thái nhất quán.
+
+\noindent
+\textbf{Các Tính Chất ACID của Transaction}
+
+\begin{itemize}
+    \item \textbf{Atomicity (Tính nguyên tử)}: Toàn bộ các thao tác trong giao dịch được thực hiện thành một khối; nếu một thao tác thất bại, toàn bộ giao dịch sẽ bị rollback.
+    \item \textbf{Consistency (Tính nhất quán)}: Giao dịch luôn đưa cơ sở dữ liệu từ trạng thái hợp lệ này sang trạng thái hợp lệ khác, tuân thủ các ràng buộc và luật lệ của dữ liệu.
+    \item \textbf{Isolation (Tính cô lập)}: Các giao dịch đồng thời sẽ không ảnh hưởng lẫn nhau; mỗi giao dịch hoạt động như thể nó là giao dịch duy nhất trên hệ thống.
+    \item \textbf{Durability (Tính bền vững)}: Sau khi giao dịch được commit, các thay đổi sẽ được lưu vĩnh viễn, ngay cả trong trường hợp hệ thống gặp sự cố.
+\end{itemize}
+
+Transaction giúp đảm bảo rằng một loạt các thao tác trên cơ sở dữ liệu được thực hiện một cách an toàn và nhất quán, giúp bảo vệ tính toàn vẹn của dữ liệu ngay cả khi có lỗi xảy ra trong quá trình thực hiện. Điều này là đặc biệt quan trọng trong các ứng dụng yêu cầu giao dịch phức tạp, như hệ thống tài chính, ngân hàng, và các ứng dụng thương mại điện tử.
+
+\subsubsection{Posgres}
+
+
+\textbf{Đặc điểm} : 
+\begin{itemize}
+    \item Hỗ trợ giao dịch đầy đủ theo tiêu chuẩn ACID, phù hợp với các hệ thống yêu cầu tính nhất quán cao.
+\end{itemize}
+
+\textbf{Ví dụ Code (SQL)}:
+
+\begin{lstlisting}[language=sql]
+BEGIN;
+UPDATE accounts SET balance = balance - 100.00
+    WHERE name = 'Alice';
+SAVEPOINT my_savepoint;
+UPDATE accounts SET balance = balance + 100.00
+    WHERE name = 'Bob';
+-- oops ... forget that and use Wally's account
+ROLLBACK TO my_savepoint;
+UPDATE accounts SET balance = balance + 100.00
+    WHERE name = 'Wally';
+COMMIT;
+\end{lstlisting}
+
+
+\subsubsection{MongoDB}
+
+\textbf{Đặc điểm} : 
+\begin{itemize}
+    \item Trước phiên bản 4.0: chỉ hỗ trợ giao dịch trên single document.
+    \item Từ phiên bản 4.0: hỗ trợ multi-document transactions (với một số hạn chế về hiệu năng và thiết kế).
+\end{itemize}
+
+\noindent
+\textbf{Ví dụ Code (Mongo Shell)}:
+    \begin{lstlisting}[language=sql]
+    const session = client.startSession();
+    session.startTransaction();
+    try {
+        await db.collection('accounts').updateOne(
+            { _id: 1 },
+            { $inc: { balance: -100 } },
+            { session }
+        );
+        await db.collection('accounts').updateOne(
+            { _id: 2 },
+            { $inc: { balance: 100 } },
+            { session }
+        );
+        await session.commitTransaction();
+    } catch (error) {
+        await session.abortTransaction();
+    } finally {
+        session.endSession();
+    }
+    \end{lstlisting}
+
+\subsubsection{So sánh}
+\textbf{Độ tin cậy giao dịch}: Postgres luôn đảm bảo ACID cho mọi giao dịch, trong khi MongoDB chỉ hỗ trợ giao dịch đa tài liệu từ phiên bản mới, cần chú ý các giới hạn về hiệu năng.

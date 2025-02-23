@@ -1,0 +1,68 @@
+\subsection{Data Backup and Recovery}
+
+Data Backup and Recovery (Sao lưu và phục hồi dữ liệu) là quá trình bảo vệ dữ liệu của hệ thống thông qua hai hoạt động chính:
+
+\begin{itemize}
+    \item \textbf{Data Backup (Sao lưu dữ liệu)}: Là quá trình tạo ra các bản sao lưu của dữ liệu từ hệ thống hiện tại và lưu trữ chúng ở một nơi an toàn (có thể là thiết bị lưu trữ khác, đám mây, …). Mục tiêu là bảo vệ dữ liệu trước các rủi ro như lỗi phần cứng, sự cố hệ thống, tấn công mạng, hoặc lỗi người dùng.
+    \item \textbf{Data Recovery (Phục hồi dữ liệu)}: Là quá trình khôi phục lại dữ liệu từ các bản sao lưu khi dữ liệu gốc bị mất, hỏng hoặc bị xâm phạm. Quá trình này đảm bảo rằng hệ thống có thể trở lại trạng thái hoạt động bình thường một cách nhanh chóng sau sự cố.
+\end{itemize}
+
+\noindent
+\textbf{Vai Trò và Tầm Quan Trọng}
+
+\begin{itemize}
+    \item \textbf{Đảm bảo tính liên tục của kinh doanh}: Trong trường hợp xảy ra sự cố, việc có các bản sao lưu giúp hệ thống phục hồi nhanh chóng, giảm thiểu thời gian gián đoạn.
+    \item \textbf{Bảo vệ dữ liệu quan trọng}: Các bản sao lưu đảm bảo rằng dữ liệu quan trọng không bị mất vĩnh viễn do lỗi hệ thống, tấn công mạng hoặc thảm họa tự nhiên.
+    \item \textbf{Hỗ trợ kiểm thử và phát triển}: Ngoài việc phục vụ khôi phục dữ liệu, các bản sao lưu còn có thể được sử dụng để tạo môi trường kiểm thử (testing environment) cho việc phát triển và kiểm tra hệ thống.
+\end{itemize}
+
+Như vậy, \textbf{Data Backup and Recovery} là một phần thiết yếu trong quản lý hệ thống dữ liệu, giúp bảo vệ dữ liệu khỏi mất mát và đảm bảo hệ thống luôn có thể phục hồi sau các sự cố không lường trước.
+
+\subsubsection{Postgres}
+
+\textbf{Các công cụ \& phương pháp:}
+\begin{itemize}
+    \item \textbf{pg\_dump}: Dùng để xuất dữ liệu dưới dạng SQL script.
+    \item \textbf{pg\_basebackup}: Dùng cho backup toàn bộ hệ thống.
+    \item \textbf{PITR (Point-in-Time Recovery)}: Cho phép phục hồi dữ liệu tới một thời điểm cụ thể.
+\end{itemize}
+
+\noindent
+\textbf{Ví dụ Code (Command Line):}
+
+Sử dụng lệnh pg\_dump để tạo bản sao lưu của cơ sở dữ liệu. 
+\begin{lstlisting}[language=bash]
+pg_dump -U username dbname > dbname_backup.sql
+\end{lstlisting}
+
+Sử dụng lệnh pg\_restore hoặc chạy script SQL từ file backup để khôi phục dữ liệu.
+\begin{lstlisting}[language=bash]
+pg_restore -U username -d dbname dbname_backup.sql
+\end{lstlisting}
+
+
+
+\subsubsection{MongoDB}
+
+\textbf{Các công cụ \& phương pháp:}
+\begin{itemize}
+    \item \textbf{mongodump \& mongorestore}: Dùng để sao lưu và phục hồi dữ liệu.
+    \item \textbf{Replica Sets}: Cung cấp tính sẵn sàng cao và khả năng tự phục hồi tự động.
+\end{itemize}
+
+\noindent
+\textbf{Ví dụ Code (Command Line):}
+
+Sử dụng công cụ mongodump để tạo bản sao lưu của dữ liệu.
+\begin{lstlisting}[language=bash]
+mongodump --db dbname --out /backup/path
+\end{lstlisting}
+
+Sử dụng công cụ mongorestore để phục hồi dữ liệu từ bản sao lưu.
+\begin{lstlisting}[language=bash]
+mongorestore --db dbname /backup/path/dbname
+\end{lstlisting}
+
+\subsubsection{So sánh}
+
+\textbf{Công cụ và quy trình}: \textbf{Postgres} có nhiều lựa chọn cho việc backup và phục hồi với khả năng phục hồi theo thời gian (PITR), trong khi \textbf{MongoDB} sử dụng các công cụ riêng biệt và kiến trúc replica set để đảm bảo an toàn dữ liệu.

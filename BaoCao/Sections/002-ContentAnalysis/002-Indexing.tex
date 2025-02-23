@@ -1,0 +1,65 @@
+\subsection{Indexing}
+
+Indexing là một cơ chế tối ưu hóa trong cơ sở dữ liệu, hoạt động như “mục lục” của một cuốn sách, giúp hệ thống định vị và truy xuất dữ liệu một cách nhanh chóng.
+
+\subsubsection{Mục đích sử dụng Indexing}
+
+\begin{itemize}
+    \item \textbf{Tăng tốc độ truy vấn}: Index giúp hệ thống tìm kiếm các bản ghi mà không cần quét toàn bộ bảng (full table scan). Điều này đặc biệt quan trọng với các bảng chứa hàng triệu bản ghi.
+    \item \textbf{Tối ưu hóa hiệu suất}: Khi truy vấn có điều kiện (WHERE, JOIN, ORDER BY, GROUP BY), index cho phép truy vấn truy cập dữ liệu theo cách đã được sắp xếp và tối ưu, giảm tải cho CPU và I/O.
+\end{itemize}
+
+\subsubsection{Khi nào nên sử dụng Indexing}
+
+\begin{itemize}
+    \item \textbf{Bảng dữ liệu lớn}: Với bảng có số lượng bản ghi lớn, index giúp cải thiện thời gian truy vấn một cách đáng kể.
+    \item \textbf{Truy vấn có điều kiện thường xuyên}: Nếu các truy vấn của bạn thường tìm kiếm theo một hoặc vài cột cụ thể, việc tạo index trên những cột này sẽ tăng tốc độ tìm kiếm.
+    \item \textbf{Truy vấn sắp xếp và nhóm dữ liệu}: Các câu lệnh sử dụng ORDER BY hoặc GROUP BY có thể được tối ưu khi có index phù hợp.
+\end{itemize}
+
+\subsubsection{Khi nào không nên sử dụng Indexing}
+
+\begin{itemize}
+    \item \textbf{Bảng dữ liệu nhỏ}: Với bảng chứa ít bản ghi, lợi ích của việc sử dụng index không đáng kể vì chi phí duy trì index có thể vượt quá lợi ích cải thiện tốc độ truy vấn.
+    \item \textbf{Thao tác ghi dữ liệu nhiều}: Index không chỉ cải thiện truy vấn mà còn cần được cập nhật mỗi khi có INSERT, UPDATE hoặc DELETE. Trong các bảng có tần suất ghi/chỉnh sửa cao, nhiều index có thể làm chậm hiệu năng ghi dữ liệu.
+    \item \textbf{Quá nhiều index trên một bảng}: Việc tạo quá nhiều index có thể dẫn đến việc quản lý và cập nhật index trở nên nặng nề, làm giảm hiệu suất của các thao tác ghi.
+\end{itemize}
+
+Tóm lại, \textbf{index} là công cụ mạnh mẽ để tối ưu hóa truy vấn, nhưng cần được áp dụng một cách hợp lý để tránh tác động tiêu cực đến hiệu năng ghi dữ liệu.
+
+\newpage
+\subsubsection{Postgres}
+
+\begin{itemize}
+    \item Các loại index hỗ trợ:
+    \begin{itemize}
+        \item \textbf{B-tree}: Mặc định cho hầu hết các loại truy vấn.
+        \item \textbf{Hash, GiST, GIN, SP-GiST}: Dùng cho các trường hợp đặc thù như tìm kiếm văn bản, dữ liệu không gian, …
+    \end{itemize}
+    \item Ví dụ Code (SQL):\begin{lstlisting}[language=sql]
+-- Tạo B-tree index trên cột email
+CREATE INDEX idx_users_email ON users(email);\end{lstlisting}
+\end{itemize}
+
+\subsubsection{MongoDB}
+
+\begin{itemize}
+    \item Các loại index hỗ trợ:
+    \begin{itemize}
+        \item \textbf{Single Field Index}: Index trên một trường.
+        \item \textbf{Compound Index}: Index trên nhiều trường.
+        \item \textbf{Text Index}: Dành cho tìm kiếm văn bản.
+        \item \textbf{Geospatial Index}: Dành cho dữ liệu không gian.
+    \end{itemize}
+    \item Ví dụ Code (Mongo Shell):\begin{lstlisting}[language=sql]
+// Tạo index trên trường email
+db.users.createIndex({ email: 1 });
+\end{lstlisting}
+\end{itemize}
+
+\subsubsection{So sánh}
+
+\begin{itemize}
+    \item \textbf{Đa dạng index}: Postgres có nhiều loại index phục vụ cho các mục đích tối ưu hóa phức tạp, trong khi MongoDB tập trung vào các loại index hỗ trợ nhanh cho việc tìm kiếm theo document.
+    \item \textbf{Cách triển khai}: Cách định nghĩa index khá khác nhau giữa SQL và JSON-like query language.
+\end{itemize}

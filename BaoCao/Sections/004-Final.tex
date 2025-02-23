@@ -1,0 +1,59 @@
+\subsection{Kết luận}
+
+Sau quá trình phân tích và so sánh chi tiết giữa PostgreSQL và MongoDB theo các khía cạnh như lưu trữ \& quản lý dữ liệu, indexing, xử lý truy vấn, giao dịch, kiểm soát đồng thời và sao lưu – phục hồi dữ liệu, chúng ta có thể rút ra một số nhận định tổng quát và đưa ra các đề xuất thực tiễn như sau:
+
+\subsubsection{Tổng Kết Những Điểm Mạnh và Hạn Chế}
+
+\textbf{PostgreSQL}
+
+\begin{itemize}
+    \item \textbf{Ưu điểm}:
+    \begin{itemize}
+        \item \textbf{Tính nhất quán và toàn vẹn dữ liệu}: Với cấu trúc schema cố định và các ràng buộc dữ liệu chặt chẽ (primary key, foreign key, unique, check), PostgreSQL đảm bảo rằng dữ liệu luôn ở trạng thái hợp lệ.
+        \item \textbf{Giao dịch mạnh mẽ}: Hỗ trợ đầy đủ các thuộc tính ACID, giúp thực hiện các giao dịch phức tạp mà không sợ mất mát hay sai lệch dữ liệu.
+        \item \textbf{Xử lý truy vấn phức tạp}: Cung cấp optimizer và công cụ phân tích truy vấn tiên tiến, rất phù hợp với các ứng dụng yêu cầu join, subquery và các phép toán phức tạp.
+    \end{itemize}
+    \item \textbf{Nhược điểm}:
+    \begin{itemize}
+        \item \textbf{Khả năng mở rộng theo chiều ngang hạn chế}: PostgreSQL thường được mở rộng theo chiều dọc (vertical scaling) trên một máy chủ mạnh, khiến việc mở rộng quy mô trên nhiều node trở nên phức tạp.
+        \item \textbf{Cấu hình phức tạp}: Đối với các ứng dụng có quy mô nhỏ hay yêu cầu thay đổi linh hoạt về dữ liệu, việc duy trì và cấu hình PostgreSQL có thể đòi hỏi nhiều nỗ lực quản trị.
+    \end{itemize}
+\end{itemize}
+
+\noindent
+\textbf{MongoDB}
+
+\begin{itemize}
+    \item \textbf{Ưu điểm}:
+    \begin{itemize}
+        \item \textbf{Linh hoạt và dễ mở rộng}: Với kiến trúc lưu trữ dạng document, MongoDB không yêu cầu schema cứng nhắc, giúp dễ dàng thích ứng với sự thay đổi của dữ liệu. Hơn nữa, khả năng phân mảnh (sharding) cho phép mở rộng theo chiều ngang một cách linh hoạt để xử lý khối lượng dữ liệu lớn.
+        \item \textbf{Hiệu năng ghi/đọc cao}: Đặc biệt phù hợp với các ứng dụng thời gian thực, nơi tốc độ xử lý và phản hồi là ưu tiên hàng đầu.
+        \item \textbf{Tích hợp các công cụ hỗ trợ sao lưu và phục hồi}: Thông qua replica sets và các công cụ như mongodump – mongorestore, MongoDB cho phép quản lý dữ liệu an toàn và khôi phục nhanh chóng sau sự cố.
+    \end{itemize}
+    \item \textbf{Nhược điểm}:
+    \begin{itemize}
+        \item \textbf{Hạn chế trong giao dịch phức tạp}: Mặc dù từ phiên bản 4.0 trở đi đã hỗ trợ multi-document transactions, nhưng khả năng xử lý giao dịch phức tạp của MongoDB vẫn chưa thể sánh bằng các hệ quản trị cơ sở dữ liệu quan hệ truyền thống.
+        \item \textbf{Thiếu tính nhất quán trong các truy vấn liên kết}: Việc xử lý các truy vấn liên quan đến join giữa các collection không trực tiếp và tự nhiên như SQL, khiến việc xử lý dữ liệu có mối quan hệ chặt chẽ trở nên khó khăn hơn.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Đề Xuất Lựa Chọn Theo Tính Chất Ứng Dụng}
+
+\begin{itemize}
+    \item \textbf{Ứng dụng yêu cầu độ tin cậy cao và giao dịch phức tạp (ví dụ: ngân hàng, tài chính, quản lý đơn hàng)}: PostgreSQL là lựa chọn ưu việt nhờ khả năng đảm bảo tính nhất quán và hỗ trợ giao dịch theo chuẩn ACID. Nếu dữ liệu cần quản lý chặt chẽ với các ràng buộc nghiêm ngặt, PostgreSQL sẽ cung cấp giải pháp an toàn và hiệu quả.
+    \item \textbf{Ứng dụng cần tính linh hoạt và mở rộng nhanh (ví dụ: ứng dụng web, hệ thống quản lý nội dung, xử lý log, dữ liệu thời gian thực)}: MongoDB sẽ phù hợp hơn nhờ khả năng thay đổi cấu trúc dữ liệu, xử lý số lượng lớn giao dịch đọc/ghi và mở rộng theo chiều ngang. Đặc biệt, các ứng dụng cần tích hợp nhanh chóng, thích ứng với sự thay đổi dữ liệu mà không cần quá nhiều cấu hình phức tạp, MongoDB là lựa chọn tối ưu.
+\end{itemize}
+
+\subsubsection{Kết Luận Chung}
+
+
+Trong bối cảnh hiện nay, việc lựa chọn hệ quản trị cơ sở dữ liệu phù hợp với nhu cầu của ứng dụng không chỉ dừng lại ở việc so sánh về mặt kỹ thuật mà còn phải cân nhắc đến các yếu tố như chi phí vận hành, khả năng mở rộng, tốc độ phản hồi và yêu cầu bảo trì. PostgreSQL và MongoDB mỗi bên đều có những ưu, nhược điểm riêng:
+
+\begin{itemize}
+    \item \textbf{PostgreSQL} là một giải pháp ổn định, mạnh mẽ cho các ứng dụng đòi hỏi tính toàn vẹn dữ liệu và xử lý giao dịch phức tạp.
+    \item \textbf{MongoDB} lại tỏ ra linh hoạt, dễ dàng mở rộng và phù hợp với các ứng dụng cần tốc độ xử lý cao và khả năng thích ứng nhanh với sự thay đổi của dữ liệu.
+\end{itemize}
+
+Quyết định lựa chọn hệ thống nào phụ thuộc vào đặc thù của ứng dụng và môi trường vận hành. Dù bạn chọn PostgreSQL hay MongoDB, việc hiểu rõ cơ chế hoạt động và các tính năng nổi bật của từng hệ thống sẽ giúp tối ưu hóa hiệu năng và đảm bảo tính ổn định của dự án. Đồng thời, thông qua ứng dụng demo so sánh, nhóm nghiên cứu có thể đánh giá một cách trực quan và thực tiễn được những khác biệt quan trọng giữa hai hệ thống, từ đó đưa ra quyết định đúng đắn cho từng dự án cụ thể.
+
+Với những nhận định và đề xuất trên, kết luận này không chỉ tổng hợp lại các nội dung đã phân tích mà còn mở ra hướng đi cho các ứng dụng thực tiễn, giúp người phát triển hiểu rõ hơn về cách thức vận dụng các tính năng của PostgreSQL và MongoDB vào các bài toán cụ thể.

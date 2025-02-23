@@ -1,0 +1,238 @@
+    \documentclass{article}
+%------------------------- packages -------------------------%
+\usepackage[vietnamese.licr]{babel}
+\usepackage{listings}
+\usepackage{tvietlistings}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc} % Đảm bảo sử dụng mã hóa UTF-8
+\usepackage{float}
+\usepackage[many]{tcolorbox}
+\usepackage[unicode,hidelinks]{hyperref}    % for reference
+\usepackage{geometry}   % for layout
+\usepackage{amsmath}    % for math
+\usepackage{xcolor}     % for color
+% for figure
+\usepackage{graphicx}
+\usepackage{caption}    
+% for code
+\usepackage{minted}
+\usepackage[normalem]{ulem}
+% for table
+\usepackage{xparse}
+\usepackage{float}      
+\usepackage{paracol}
+\usepackage{array}
+\usepackage{multirow}
+% for header & footer 
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{CJKutf8}
+\usepackage{xcolor}
+
+
+%------------------------- set up -------------------------%
+% figure
+\graphicspath{{./Images/}}              % path to image
+\captionsetup[figure]{labelfont={small,bf,it},textfont={small,it}}
+% paragraph
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{12pt}
+\setlength{\parskip}{6pt}               % disables indentation
+\renewcommand{\baselinestretch}{1.5}    % line spacing
+
+% code
+\def\code#1{\texttt{#1}}    % font
+\usemintedstyle{vs}         % minted theme
+\setminted{
+    autogobble,             % remove all common leading whitespace
+    baselinestretch=1.0,
+    bgcolor=gray!5!white,
+    breaklines,
+    %linenos,               % enables line numbers
+    fontsize=\footnotesize
+}
+% Table addrow Macro with dyanamic
+% Define the new addrow command to accept a variable number of arguments
+\NewDocumentCommand{\addrow}{>{\SplitList{;}}m}{%
+  \processline#1\relax
+}
+
+
+% Define a custom style
+\lstdefinestyle{myStyle}{
+    frame=l,
+    framesep=4.5mm,
+    framexleftmargin=2.5mm,
+    basicstyle=\ttfamily\footnotesize,
+    captionpos=b,
+    commentstyle=\color{comment},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    keepspaces=true,                 
+    numbers=left,       
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    keywords={if, else, for, while, repeat, function, in, next, break, library, ifelse, select, return, print, mutate, hist, tapply, apply, sapply, boxplot, barplot, factor},
+		% keywordstyle=\color{blue}\bfseries,
+        keywordstyle=\color{comment},
+		ndkeywords={class, data.frame, numeric, matrix, character, list, c, seq},
+		ndkeywordstyle=\color{black}\bfseries,
+		identifierstyle=\color{black},
+		sensitive=false,
+		comment=[l]{\#},
+}
+% Helper macro to process each item
+\newcommand{\processline}[1]{%
+  \ifx\relax#1\relax % End of the list
+    \\ \hline
+  \else
+    #1%
+    \expandafter\processnext
+  \fi
+}
+
+\newcommand{\processnext}[1]{%
+  \ifx\relax#1\relax % End of the list
+    \\ \hline
+  \else
+    & #1%
+    \expandafter\processnext
+  \fi
+}
+
+% Callout
+\definecolor{main}{HTML}{5989cf}    % setting main color to be used
+\definecolor{comment}{HTML}{606060}
+\definecolor{sub}{HTML}{cde4ff}     % setting sub color to be used
+\newtcolorbox{boxH}{
+    % fontupper = \bf,
+    boxrule = 1.5pt,
+    colback = white, 
+    colframe = black % frame color
+}
+% End
+%------------------------- layout & margin -------------------------%
+\geometry{
+    a4paper,        % redundant if already in \documentclass
+    left=20.32mm,
+    right=20.32mm,
+    top=25.40mm,
+    bottom=25.40mm,
+    heightrounded,  % better use it
+}
+\setlength{\parindent}{20pt}
+%------------------------- header & footer -------------------------%
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\setlength{\headheight}{24.5pt}
+\pagestyle{fancy}
+
+\fancyhead{}    % clear all header fields
+\fancyhead[L]{
+    \begin{tabular}{ll}
+        \begin{picture}(10,10)
+            \put(0,-7){\includegraphics[width=8mm]{{Images/bachkhoa_logo.png}}}
+        \end{picture}&
+    	\begin{tabular}{l}
+    	    {\ttfamily Trường Đại học Bách Khoa Tp. Hồ Chí Minh} \\
+    	    {\ttfamily Khoa Khoa học và Kỹ thuật Máy tính} \\
+    	\end{tabular} 	
+    \end{tabular}
+}
+
+\fancyfoot{}    % clear all footer fields
+\fancyfoot[L]{\footnotesize {\ttfamily Báo cáo Hệ Quản Trị Cơ Sở Dữ Liệu}}
+\fancyfoot[R]{\footnotesize {\ttfamily Trang {\thepage}/\pageref{LastPage}}}
+% might change to \scriptsize
+
+%------------------------- body -------------------------%
+\begin{document}
+
+
+% Use \lstset to make myStyle the global default
+\lstset{style=myStyle}
+%-------------------- cover --------------------%
+\begin{titlepage}
+\begin{center}
+    \large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH \\
+    TRƯỜNG ĐẠI HỌC BÁCH KHOA \\
+    KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH
+\end{center}
+
+\vspace{1.5cm}
+
+\begin{figure}[!ht]
+    \centering \includegraphics[width=3.5cm]{Images/bachkhoa_logo.png}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c}
+    {\bf \Large HỆ QUẢN TRỊ CƠ SỞ DỮ LIỆU (CO3021)} \\ \\
+    \hline  \\
+    \multicolumn{0}{c}{{\bf \huge Báo cáo Bài tập lớn}} \\
+    {\bf \huge Postgres và MongoDB}     \\  
+    \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrlc}
+
+\hspace{5 cm} & Giáo viên hướng dẫn: & LÊ THỊ BẢO THU\\
+& Các thành viên nhóm &  
+ 	
+    Đào Duy Tùng& 2033364\\
+& & Huỳnh Huynh Mân & 2033364\\
+& & Vũ Trường Khoa& 2252867\\
+& & Tôn Trọng Tín & 2333464\\
+\end{tabular}
+\textbf{\textit{}}\end{table}
+
+\vspace{1.0cm}
+
+\begin{center}
+    \footnotesize Tp. Hồ Chí Minh, Tháng 03/2025
+\end{center}
+\end{titlepage}
+\newpage
+%-------------------- mission --------------------%
+%\renewcommand{\arraystretch}{2}
+
+%-------------------- mục lục --------------------%
+\tableofcontents
+%-------------------- Chia các mục --------------------%
+\include{Sections/000-Bao-Cao}
+%-------------------- main --------------------%
+\phantomsection
+
+% --------- Document Note --------------
+% ╔═══════════════════════╗
+% ║       Table           ║
+% ╚═══════════════════════╝
+% \begin{table}[H]
+% \begin{tabular}{|l|r|c|c|} % Define how many columns of table[1]
+% \hline
+% Use \addrow to create new row % Need equal columns number that define in [1] and seprate by ;
+% \addrow {<columns-data>;<columns-data2>...};
+% \end{tabular}
+% \end{table}
+% ╔═══════════════════════╗
+% ║       Math Equation   ║
+% ╚═══════════════════════╝
+% Inline Equation: use $<formula>$
+% For Block Equation: use $$ <formula> $$
+% ╔═══════════════════════╗
+% ║       Coding          ║
+% ╚═══════════════════════╝
+% \begin{lstlisting}[language=R, caption=<Example Caption>]
+% -- Start your code
+% \end{lstlisting}
+
+\end{document}
+

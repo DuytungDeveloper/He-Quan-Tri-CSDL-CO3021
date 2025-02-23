@@ -1,0 +1,84 @@
+\section{Giới thiệu tổng quan}
+\subsection{Các khái niệm cơ bản}
+\subsubsection{Cơ sở dữ liệu quan hệ (Relational Database)}
+
+\textbf{Khái niệm}
+
+Là hệ thống quản lý cơ sở dữ liệu dựa trên mô hình bảng, trong đó dữ liệu được lưu trữ dưới dạng các bảng có các hàng (record) và cột (field). Các bảng có thể liên kết với nhau thông qua các mối quan hệ (relationship) như khóa chính (primary key) và khóa ngoại (foreign key).
+
+\noindent
+\textbf{Đặc điểm}
+\begin{itemize}
+    \item \textbf{Schema cố định}: Cần định nghĩa cấu trúc dữ liệu trước khi lưu trữ.
+    \item \textbf{Ngôn ngữ truy vấn}: Sử dụng SQL (Structured Query Language) để thao tác dữ liệu.
+    \item \textbf{Tính nhất quán cao}: Hỗ trợ giao dịch theo chuẩn ACID (Atomicity, Consistency, Isolation, Durability).
+    \item \textbf{Ví dụ}: PostgreSQL, MySQL, Oracle.
+\end{itemize}
+
+
+
+\subsubsection{Cơ sở dữ liệu NoSQL dạng document (Document-oriented NoSQL Database)}
+
+\textbf{Khái niệm}
+
+Là hệ thống quản lý cơ sở dữ liệu NoSQL, lưu trữ dữ liệu dưới dạng các tài liệu (documents) thường ở định dạng JSON, BSON hoặc XML. Mỗi tài liệu có thể chứa các cấu trúc dữ liệu phức tạp và không cần phải tuân theo một schema cố định.
+
+\noindent
+\textbf{Đặc điểm}
+\begin{itemize}
+    \item \textbf{Schema linh hoạt}: Cho phép lưu trữ dữ liệu với cấu trúc khác nhau trong cùng một collection.
+    \item \textbf{Khả năng mở rộng}: Dễ dàng mở rộng theo chiều ngang (scaling out) để xử lý khối lượng dữ liệu lớn.
+    \item \textbf{Truy vấn qua API hoặc ngôn ngữ truy vấn riêng}: Sử dụng cú pháp truy vấn đặc thù như MongoDB Query Language (MQL).
+    \item \textbf{Ví dụ}: MongoDB, CouchDB.
+\end{itemize}
+
+\newpage
+
+\subsection{PostgreSQL là gì?}
+
+\textbf{PostgreSQL} là một hệ quản trị cơ sở dữ liệu quan hệ (RDBMS) mã nguồn mở mạnh mẽ, nổi tiếng với tính tuân thủ chuẩn SQL, tính năng mở rộng cao và hỗ trợ đầy đủ các giao dịch ACID. Nó được thiết kế để xử lý khối lượng công việc phức tạp, hỗ trợ nhiều kiểu dữ liệu (bao gồm JSON, XML) và cung cấp nhiều tính năng tiên tiến như MVCC (Multi-Version Concurrency Control), stored procedures, trigger, và hỗ trợ lập trình mở rộng qua các ngôn ngữ như PL/pgSQL, Python,…
+
+\subsubsection{Khi nào nên dùng PostgreSQL?}
+
+\begin{itemize}
+    \item \textbf{Ứng dụng đòi hỏi tính toàn vẹn và nhất quán cao}: Khi ứng dụng cần đảm bảo các giao dịch tuân thủ chuẩn ACID (Atomicity, Consistency, Isolation, Durability), chẳng hạn như các hệ thống tài chính, ngân hàng, hay quản lý đơn hàng.
+    \item \textbf{Yêu cầu xử lý truy vấn phức tạp}: PostgreSQL rất mạnh mẽ với các truy vấn liên quan đến join, subquery, aggregate… Điều này phù hợp với các hệ thống phân tích, báo cáo và truy vấn dữ liệu phức tạp.
+    \item \textbf{Định nghĩa schema rõ ràng}: Khi dữ liệu có cấu trúc xác định và cần quản lý bằng các ràng buộc như khóa chính, khóa ngoại, unique, check constraints để đảm bảo tính hợp lệ của dữ liệu.
+    \item \textbf{Tính mở rộng theo chiều dọc}: Ứng dụng cần tận dụng tài nguyên của một máy chủ mạnh (CPU, RAM, ổ đĩa) để xử lý khối lượng lớn giao dịch.
+    \item \textbf{Hỗ trợ đa dạng kiểu dữ liệu và mở rộng}: Khi cần lưu trữ các kiểu dữ liệu phức tạp như JSON hoặc các kiểu dữ liệu địa lý, PostgreSQL cung cấp các module như PostGIS cho dữ liệu không gian.
+\end{itemize}
+
+\subsubsection{Khi nào không nên dùng PostgreSQL?}
+
+\begin{itemize}
+    \item \textbf{Ứng dụng yêu cầu mở rộng theo chiều ngang cực lớn}: Nếu hệ thống cần mở rộng qua nhiều máy chủ để xử lý khối lượng dữ liệu khổng lồ (big data) với khả năng phân mảnh (sharding) tự động, một số cơ sở dữ liệu NoSQL hoặc hệ thống NewSQL có thể phù hợp hơn.
+    \item \textbf{Yêu cầu hiệu năng cao cho các tác vụ đơn giản, không cần giao dịch phức tạp}: Trong các ứng dụng chỉ cần xử lý các thao tác đọc/ghi đơn giản, với yêu cầu linh hoạt về schema (ví dụ: lưu trữ log, dữ liệu không cấu trúc) thì các hệ thống như MongoDB hoặc các cơ sở dữ liệu key-value có thể là lựa chọn tối ưu hơn.
+    \item \textbf{Độ phức tạp quản trị}: Mặc dù PostgreSQL rất mạnh mẽ, nhưng với các ứng dụng nhỏ hoặc không đòi hỏi các tính năng nâng cao, cấu hình và quản trị của PostgreSQL có thể phức tạp hơn so với một số hệ thống nhẹ hơn.
+\end{itemize}
+
+\textbf{PostgreSQL} là lựa chọn tuyệt vời cho các ứng dụng yêu cầu tính nhất quán, xử lý giao dịch phức tạp và truy vấn dữ liệu mạnh mẽ. Tuy nhiên, nếu hệ thống cần mở rộng theo chiều ngang quy mô lớn hoặc không cần nhiều tính năng phức tạp, các lựa chọn khác như NoSQL hoặc cơ sở dữ liệu key-value có thể là giải pháp hợp lý hơn.
+
+
+\subsection{MongoDB là gì?}
+
+\textbf{MongoDB} là một hệ quản trị cơ sở dữ liệu NoSQL dạng document, nghĩa là nó lưu trữ dữ liệu dưới dạng các tài liệu (documents) – thường ở định dạng JSON hoặc BSON – trong các collection. Điều này mang lại sự linh hoạt cao vì không cần phải định nghĩa một schema cứng nhắc trước khi lưu trữ dữ liệu.
+
+
+
+\subsubsection{Khi nào nên dùng MongoDB?}
+\begin{itemize}
+    \item \textbf{Ứng dụng cần tính linh hoạt về dữ liệu}: Khi dữ liệu có thể thay đổi cấu trúc theo thời gian hoặc khi dữ liệu có tính chất phi cấu trúc. Ví dụ: các ứng dụng nội dung, blog, hoặc lưu trữ log, nơi mỗi bản ghi có thể có các thuộc tính khác nhau.
+    \item \textbf{Khả năng mở rộng theo chiều ngang}: MongoDB được thiết kế để dễ dàng phân mảnh (sharding) và mở rộng qua nhiều máy chủ, phù hợp với các ứng dụng cần xử lý khối lượng dữ liệu lớn hoặc cần tăng tốc độ xử lý bằng cách phân phối tải.
+    \item \textbf{Phát triển nhanh và linh hoạt}: Trong các dự án yêu cầu phát triển nhanh, không muốn ràng buộc dữ liệu với schema cứng nhắc, MongoDB cho phép thay đổi cấu trúc dữ liệu dễ dàng trong quá trình phát triển.
+    \item \textbf{Ứng dụng thời gian thực}: Các ứng dụng cần hiệu năng ghi/đọc cao, ví dụ như các dịch vụ web, hệ thống theo dõi (monitoring) hay trò chuyện trực tuyến, có thể hưởng lợi từ kiến trúc NoSQL của MongoDB.
+\end{itemize}
+
+\subsubsection{Khi nào không nên dùng MongoDB?}
+
+\begin{itemize}
+    \item \textbf{Yêu cầu giao dịch phức tạp và tính nhất quán cao}: Nếu ứng dụng cần thực hiện các giao dịch phức tạp với tính toàn vẹn dữ liệu nghiêm ngặt (ACID) như trong hệ thống tài chính hoặc ngân hàng, các cơ sở dữ liệu quan hệ như PostgreSQL thường phù hợp hơn.
+    \item \textbf{Các phép join và truy vấn liên quan đến dữ liệu có mối quan hệ chặt chẽ}: MongoDB không hỗ trợ join giữa các collection một cách tự nhiên như SQL. Nếu dữ liệu có nhiều mối liên kết phức tạp cần join, thì hệ thống CSDL quan hệ sẽ có lợi thế hơn.
+    \item \textbf{Yêu cầu xử lý truy vấn phức tạp}: Khi ứng dụng cần thực hiện các truy vấn phân tích và tổng hợp phức tạp, các hệ thống RDBMS thường có optimizer mạnh mẽ và cú pháp SQL hỗ trợ tốt hơn.
+\end{itemize}
+
+\textbf{MongoDB} là một giải pháp tuyệt vời cho các ứng dụng cần sự linh hoạt trong lưu trữ dữ liệu, khả năng mở rộng theo chiều ngang và tốc độ xử lý nhanh cho các tác vụ ghi/đọc đơn giản. Tuy nhiên, nếu ứng dụng của bạn đòi hỏi tính toàn vẹn dữ liệu cao, giao dịch phức tạp, hoặc các phép toán liên quan đến nhiều mối quan hệ dữ liệu (join), một hệ quản trị cơ sở dữ liệu quan hệ (như PostgreSQL) có thể là lựa chọn phù hợp hơn.
