@@ -1,7 +1,7 @@
 # Hệ Quản Trị Cơ Sở Dữ Liệu CO3021 - HK242
-Bài tập lớn - báo cáo Hệ Quản Trị CSDL 
-Đề tài : So sánh Postgres và MongoDB
 
+Bài tập lớn - báo cáo Hệ Quản Trị CSDL
+Đề tài : So sánh Postgres và MongoDB
 
 ## Cấu Trúc Thư Mục Source Code
 
@@ -10,19 +10,19 @@ Dự án được tổ chức với cấu trúc quan trọng như sau:
 ```plaintext
 project-root/
 ├── BaoCao/                 # Chứa các file latex để làm báo cáo
-│   ├── .......             
+│   ├── .......
 │
 ├── Slide/                  # Chứa slide thuyết trình
-│   ├── .......             
+│   ├── .......
 |
 ├── Simple-E-commerce/      # Frontend and Backend code
-│   ├── .......             
+│   ├── .......
 │
 ├── Temlate/                # Template for ADMIN and CLIENT
-│   ├── .......             
+│   ├── .......
 │
 ├── Dockers/                # Chứa các file docker triển khai
-│   ├── .......             
+│   ├── .......
 │
 ├── .gitignore             # File cấu hình bỏ qua khi commit
 ├── README.md              # Hướng dẫn sử dụng và deploy dự án
@@ -31,7 +31,7 @@ project-root/
 
 ## Schema
 
-### Products
+### Products (5_000_000 Dữ liệu)
 
 ```javascript
 {
@@ -55,8 +55,7 @@ Nếu cần tìm kiếm theo mô tả, tạo Text Index:
 db.products.createIndex({ description: "text" });
 ```
 
-### Users
-
+### Users (1_000_000 Dữ liệu)
 
 ```javascript
 {
@@ -79,7 +78,7 @@ Tạo unique index trên email:
 db.users.createIndex({ email: 1 }, { unique: true });
 ```
 
-### Orders
+### Orders (1_000_000 Dữ liệu)
 
 ```javascript
 {
@@ -111,9 +110,9 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
 ## Danh sách chức năng
 
-1. Quản lý Danh mục Sản phẩm (Product Catalog Management)
+1.  Quản lý Danh mục Sản phẩm (Product Catalog Management)
 
-    Mục đích: 
+    Mục đích:
 
         Tạo và lưu trữ danh mục sản phẩm với hàng ngàn đến hàng triệu bản ghi.
 
@@ -121,89 +120,88 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
         Indexing: Tạo index trên các trường như productName, category và price để tối ưu hóa truy vấn tìm kiếm.
 
-2. Đăng ký và Quản lý Người dùng (User Registration and Profile Management)
+2.  Đăng ký và Quản lý Người dùng (User Registration and Profile Management)
 
-    Mục đích: 
-        
+    Mục đích:
+
         Quản lý thông tin người dùng cho việc đặt hàng.
-    
+
     Ứng dụng các tính năng:
-    
+
         Indexing & Query Processing: Tạo index trên email, tìm kiếm người dùng nhanh chóng.
 
-3. Tìm kiếm Sản phẩm Nâng cao (Advanced Product Search)
-    
-    Mục đích: 
-        Cho phép người dùng tìm kiếm sản phẩm theo từ khóa, danh mục, khoảng giá…
+3.  Tìm kiếm Sản phẩm Nâng cao (Advanced Product Search)
+
+    Mục đích:
+    Cho phép người dùng tìm kiếm sản phẩm theo từ khóa, danh mục, khoảng giá…
 
     Ứng dụng các tính năng:
-        
+
         Query Processing: Sử dụng Aggregation Pipeline và text search (có thể tạo Text Index cho mô tả sản phẩm) để xử lý truy vấn phức tạp.
 
-4. Đặt Hàng (Place an Order) với Giao dịch (Transaction)
-    
-    Mục đích: 
-    
+4.  Đặt Hàng (Place an Order) với Giao dịch (Transaction)
+
+    Mục đích:
+
         Khi người dùng đặt hàng, cần cập nhật số lượng tồn kho và lưu thông tin đơn hàng một cách nguyên tử.
 
     Ứng dụng các tính năng:
-    
+
         Transaction: Sử dụng multi-document transaction đảm bảo cả hai thao tác (giảm stock và tạo đơn hàng) đều thành công hoặc rollback.
 
-5. Mô phỏng Đặt Hàng Cạnh tranh (Concurrent Order Placement)
-    
-    Mục đích: 
-        
+5.  Mô phỏng Đặt Hàng Cạnh tranh (Concurrent Order Placement)
+
+    Mục đích:
+
         Minh họa trường hợp nhiều người dùng cùng đặt một sản phẩm có số lượng giới hạn.
 
     Ứng dụng các tính năng:
-        
+
         Concurrency Control: Sử dụng các thao tác cập nhật nguyên tử (atomic update) và transaction để đảm bảo không xảy ra overselling.
 
+6.  Quản lý Tồn kho (Inventory Management) với Cập nhật Nguyên tử
 
-6. Quản lý Tồn kho (Inventory Management) với Cập nhật Nguyên tử
-    
-    Mục đích: 
-        
+    Mục đích:
+
         Đảm bảo số lượng tồn kho được cập nhật chính xác trong mọi giao dịch.
 
     Ứng dụng các tính năng:
 
         Concurrency Control: Sử dụng các thao tác cập nhật nguyên tử như $inc để đảm bảo số liệu chính xác ngay cả khi có nhiều cập nhật đồng thời.
 
-7. Lịch sử Đơn hàng và Chi tiết (Order History and Details)
-    
-    Mục đích: 
-        
+7.  Lịch sử Đơn hàng và Chi tiết (Order History and Details)
+
+    Mục đích:
+
         Hiển thị lịch sử đơn hàng của người dùng, kết hợp thông tin sản phẩm và đơn hàng.
 
     Ứng dụng các tính năng:
-    
+
         Query Processing: Sử dụng Aggregation với $lookup để join thông tin đơn hàng với sản phẩm.
 
-8. Báo cáo và Phân tích Bán hàng (Admin Reporting and Analytics)
-    
-    Mục đích: 
-        
+8.  Báo cáo và Phân tích Bán hàng (Admin Reporting and Analytics)
+
+    Mục đích:
+
         Cung cấp báo cáo về doanh số, sản phẩm bán chạy, và thống kê đơn hàng.
 
     Ứng dụng các tính năng:
-        
+
         Query Processing: Sử dụng Aggregation Pipeline để tính toán tổng doanh thu, số đơn hàng theo thời gian và sắp xếp theo mức độ bán chạy.
 
-9. Sao lưu Dữ liệu (Data Backup)
-    
-    Mục đích: 
-        
+9.  Sao lưu Dữ liệu (Data Backup)
+
+    Mục đích:
+
         Đảm bảo dữ liệu của hệ thống có thể được sao lưu định kỳ để phòng ngừa mất mát.
-    
+
     Ứng dụng các tính năng:
-        
+
         Data Backup: Sử dụng công cụ mongodump để tạo bản sao lưu của database.
 
 10. Phục hồi Dữ liệu (Data Recovery)
-    
-    Mục đích: 
+
+    Mục đích:
 
         Minh họa quá trình phục hồi dữ liệu từ bản sao lưu khi xảy ra sự cố.
 
@@ -217,13 +215,13 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
 - Đào Duy Tùng : 3, 6 (Query Processing)
 
-- Tôn Trọng Tín :  4, 5 (Concurrency Control) 
+- Tôn Trọng Tín : 4, 5 (Concurrency Control)
 
 - Huỳnh Huynh Mân : 7,8 (Transaction)
 
 - Vũ Trường Khoa : 9,10 (Data Backup, Data Recovery)
 
---- 
+---
 
 - Huỳnh Nga : Slide
 
@@ -231,4 +229,8 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
 - Huỳnh Huynh Mân : Video
 
-- Đào Duy Tùng : Cấu trúc báo cáo cơ bản, research cơ bản, recap các tuần, voting công nghệ, docker file, tạo dữ liệu, ....
+- Đào Duy Tùng : Cấu trúc báo cáo cơ bản, research cơ bản, recap các tuần, voting công nghệ, docker file, tạo dữ liệu vài triệu dữ liệu, ....
+
+## CSDL (MONGODB)
+
+[Link download](https://drive.google.com/file/d/1YkBCKJfKAettcVWIrbAUvs7eS59IjaXX/view?usp=sharing)
