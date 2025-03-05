@@ -9,24 +9,24 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Tìm kiếm Sản phẩm Nâng cao",
+  title: "Quản lý Tồn kho",
 };
 
-const AdvanceFindProductPage = () => {
+const ManagerProductPage = () => {
   return (
     <>
-      <Breadcrumb pageName="Tìm kiếm Sản phẩm Nâng cao" />
+      <Breadcrumb pageName="Quản lý Tồn kho" />
       <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
-        Cho phép người dùng tìm kiếm sản phẩm theo từ khóa, danh mục, khoảng giá…
+        Đảm bảo số lượng tồn kho được cập nhật chính xác trong mọi giao dịch.
       </h2>
-
       <div className="space-y-10">
         <Suspense fallback={<TopProductsSkeleton />}>
           <TopProducts />
         </Suspense>
+
       </div>
     </>
   );
 };
 
-export default AdvanceFindProductPage;
+export default ManagerProductPage;

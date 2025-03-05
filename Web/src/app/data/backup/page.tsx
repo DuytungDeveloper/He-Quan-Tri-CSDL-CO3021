@@ -9,24 +9,21 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Quản lý Danh mục Sản phẩm",
+    title: "Sao lưu dữ liệu",
 };
 
-const ManagerProductPage = () => {
-  return (
-    <>
-      <Breadcrumb pageName="Quản lý Danh mục Sản phẩm" />
-      <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
-        Tạo và lưu trữ danh mục sản phẩm
-      </h2>
+const DataBackupPage = () => {
+    return (
+        <>
+            <Breadcrumb pageName="Sao lưu dữ liệu" />
+            <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
+                Đảm bảo dữ liệu của hệ thống có thể được sao lưu định kỳ để phòng ngừa mất mát.
+            </h2>
 
-      <div className="space-y-10">
-        <Suspense fallback={<TopProductsSkeleton />}>
-          <TopProducts />
-        </Suspense>
-      </div>
-    </>
-  );
+            <div className="space-y-10">
+            </div>
+        </>
+    );
 };
 
-export default ManagerProductPage;
+export default DataBackupPage;

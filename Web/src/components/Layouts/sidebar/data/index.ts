@@ -2,10 +2,10 @@ import * as Icons from "../icons";
 
 export const NAV_DATA = [
   {
-    label: "MAIN MENU",
+    label: "Các chức năng chính (8)",
     items: [
       {
-        title: "Báo cáo và Phân tích Bán hàng",
+        title: "8. Báo cáo và Phân tích Bán hàng",
         icon: Icons.HomeIcon,
         items: [
           {
@@ -15,56 +15,50 @@ export const NAV_DATA = [
         ],
       },
       {
-        title: "Sản phẩm",
+        title: "Sản phẩm (1,3,6)",
         icon: Icons.Table,
         items: [
           {
-            title: "Quản lý Danh mục Sản phẩm",
+            title: "1. Quản lý Danh mục Sản phẩm",
             url: "/products/manager",
           },
           {
-            title: "Tìm kiếm Sản phẩm Nâng cao",
+            title: "3. Tìm kiếm Sản phẩm Nâng cao",
             url: "/products/advanceFind",
           },
           {
-            title: "Quản lý Tồn kho",
+            title: "6. Quản lý Tồn kho",
             url: "/products/manager2",
           },
         ],
       },
 
       {
-        title: "Người dùng",
+        title: "2. Đăng ký và Quản lý Người dùng",
+        url: "/user/manager",
         icon: Icons.Table,
         items: [
-          {
-            title: "Quản lý Người dùng",
-            url: "/user/manager",
-          },
-          {
-            title: "Đăng ký người dùng",
-            url: "/user/register",
-          },
+
         ],
       },
 
       {
-        title: "Đặt hàng",
+        title: "Đặt hàng (4,5)",
         icon: Icons.Table,
         items: [
           {
-            title: "Đặt hàng",
+            title: "4. Đặt hàng",
             url: "/order/placeOrder",
           },
           {
-            title: "Mô phỏng Đặt Hàng Cạnh tranh",
+            title: "5. Mô phỏng Đặt Hàng Cạnh tranh",
             url: "/order/advanceOrder",
           },
         ],
       },
 
       {
-        title: "Lịch sử Đơn hàng và Chi tiết",
+        title: "7. Lịch sử Đơn hàng và Chi tiết",
         url: "/order/manager",
         icon: Icons.Table,
         items: [
@@ -72,21 +66,24 @@ export const NAV_DATA = [
       },
 
       {
-        title: "Dữ liệu",
+        title: "Dữ liệu (9,10)",
         icon: Icons.Table,
         items: [
           {
-            title: "Sao lưu Dữ liệu",
+            title: "9. Sao lưu Dữ liệu",
             url: "/data/backup",
           },
           {
-            title: "Phục hồi Dữ liệu",
+            title: "10. Phục hồi Dữ liệu",
             url: "/data/restore",
           },
         ],
       },
-
-
+    ],
+  },
+  {
+    label: "Tham khảo giao diện",
+    items: [
       {
         title: "Calendar",
         url: "/calendar",
