@@ -246,3 +246,5 @@ Web
 Template : https://nextadmin.co/
 
 https://vercel.com/docs/cli
+
+vercel build && vercel deploy
