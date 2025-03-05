@@ -16,8 +16,8 @@ export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
 
   const USER = {
-    name: "John Smith",
-    email: "johnson@nextadmin.com",
+    name: "Duy Tùng",
+    email: "tung.daodeveloper@hcmut.edu.vn",
     img: "/images/user/user-03.png",
   };
 
@@ -77,7 +77,7 @@ export function UserInfo() {
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
-        <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
+        {/* <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
           <Link
             href={"/profile"}
             onClick={() => setIsOpen(false)}
@@ -99,7 +99,7 @@ export function UserInfo() {
               Account Settings
             </span>
           </Link>
-        </div>
+        </div> */}
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 

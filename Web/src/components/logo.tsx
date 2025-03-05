@@ -6,7 +6,8 @@ export function Logo() {
   return (
     <div className="relative h-8 max-w-[10.847rem]">
       <Image
-        src={logo}
+        // src={logo}
+        src='/images/logo/bk_name_en.png'
         fill
         className="dark:hidden"
         alt="NextAdmin logo"
@@ -15,7 +16,8 @@ export function Logo() {
       />
 
       <Image
-        src={darkLogo}
+        // src={darkLogo}
+        src='/images/logo/bkLogo-dark.png'
         fill
         className="hidden dark:block"
         alt="NextAdmin logo"
