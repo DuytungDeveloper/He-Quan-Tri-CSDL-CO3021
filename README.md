@@ -3,6 +3,8 @@
 Bài tập lớn - báo cáo Hệ Quản Trị CSDL
 Đề tài : So sánh Postgres và MongoDB
 
+Demo : https://he-quan-tri-csdl-co-3021.vercel.app/
+
 ## Cấu Trúc Thư Mục Source Code
 
 Dự án được tổ chức với cấu trúc quan trọng như sau:
