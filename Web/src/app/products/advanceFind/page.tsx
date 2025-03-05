@@ -7,12 +7,15 @@ import { TopProductsSkeleton } from "@/components/Tables/top-products/skeleton";
 
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { getTop10 } from "./fetch";
 
 export const metadata: Metadata = {
   title: "Tìm kiếm Sản phẩm Nâng cao",
 };
 
-const AdvanceFindProductPage = () => {
+const AdvanceFindProductPage = async () => {
+  // const data = await getTop10()
+  // console.log("🚀 ~ AdvanceFindProductPage ~ data:", data)
   return (
     <>
       <Breadcrumb pageName="Tìm kiếm Sản phẩm Nâng cao" />
