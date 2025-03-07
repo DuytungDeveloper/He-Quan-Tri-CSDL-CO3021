@@ -1,26 +1,33 @@
-
 "use client"
-import $ from 'jquery';
-import 'pdfmake/build/pdfmake'; // Required for PDF
-import 'pdfmake/build/vfs_fonts'; // Required fonts for PDF
 import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 import 'datatables.net-buttons-dt/css/buttons.dataTables.css'; // Buttons CSS
+
 import { useCallback, useEffect, useRef, useState } from 'react';
-import moment from 'moment';
-import DataTableJS, { Api } from 'datatables.net-dt';
-import 'datatables.net-buttons';
-import 'datatables.net-buttons-dt';
-import 'datatables.net-rowreorder-dt';
-import 'datatables.net-colreorder-dt';
-import 'datatables.net-buttons/js/buttons.colVis.mjs';
-import 'datatables.net-buttons/js/buttons.html5.mjs';
-import 'datatables.net-buttons/js/buttons.print.mjs';
 import { ToastContainer, toast } from 'react-toastify';
 import Checkbox from '../FormElements/Checkboxes/Checkbox';
 
 import DoubleRangeSlider from '../Slider/MultiRangeSlider';
 import dayjs from 'dayjs';
 import { debounce, throttle } from 'lodash';
+import dynamic from 'next/dynamic';
+
+const DataTable = dynamic(
+    async () => {
+        const dtReact = import('datatables.net-react')
+
+
+        const dtNet = import(`datatables.net-dt`);
+
+        const [reactMod, dtNetMod] = await Promise.all([dtReact, dtNet,
+
+        ]);
+
+        reactMod.default.use(dtNetMod.default);
+
+        return reactMod.default;
+    },
+    { ssr: false }
+);
 
 function _formatString(str: string) {
     str = str.toLowerCase();
@@ -36,8 +43,8 @@ function _formatString(str: string) {
 
 export default function AdvanceFindProduct() {
 
-    const [dataTable, setDataTable] = useState<Api<any> | undefined>(undefined)
-    const dataTableRef = useRef<Api<any> | undefined>(null)
+    // const [dataTable, setDataTable] = useState<Api<any> | undefined>(undefined)
+    const dataTableRef = useRef<any>(null)
     const [isFilterByCreditRange, setIsFilterByCreditRange] = useState(false);
     const [isFilterByDateRange, setIsFilterByDateRange] = useState(false);
     const [creditRange, setCreditRange] = useState([0, 0])
@@ -100,134 +107,6 @@ export default function AdvanceFindProduct() {
         return JSON.stringify(d); // Convert DataTables data to JSON format
     }).current
 
-    useEffect(() => {
-        // Initialize DataTable only if it hasn't been initialized already
-        if (!$.fn.DataTable.isDataTable('#myTable')) {
-            // const ta = $('#myTable').DataTable({row});
-            const table = new DataTableJS('#myTable', {
-                // rowReorder: true, 
-                orderMulti: true,
-                colReorder: true,
-                serverSide: true,
-                language: {
-                    "decimal": "",
-                    "emptyTable": "No data available in table",
-                    "info": "Hiển thị từ _START_ đến _END_ trên tổng _TOTAL_ dữ liệu",
-                    "infoEmpty": "Showing 0 to 0 of 0 entries",
-                    "infoFiltered": "(lọc từ _MAX_ tổng số dữ liệu)",
-                    "infoPostFix": "",
-                    "thousands": ",",
-                    "lengthMenu": "Hiện _MENU_ dữ liệu",
-                    "loadingRecords": "Đang tải...",
-                    "processing": "",
-                    "search": "",
-                    "zeroRecords": "No matching records found",
-                    "paginate": {
-                        "first": "Trang đầu",
-                        "last": "Trang cuối",
-                        "next": "Trang kế",
-                        "previous": "Trang trước"
-                    },
-                    searchPlaceholder: "Tìm gì cũng được",
-                    "aria": {
-                        // "orderable": "Order by this column",
-                        // "orderableReverse": "Reverse order this column"
-                    }
-                },
-                // stateSave: true, // Lưu trạng thái
-                initComplete: function () {
-
-                    const api = (this as any).api();
-
-                    // Add event listener for the "Go" button
-                    $('#jump-to-button').on('click', function () {
-                        const input = $('#jump-to-page').val();
-                        const pageNumber = parseInt(input as any, 10);
-
-                        if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= api.page.info().pages) {
-                            // Jump to the specified page (0-indexed in DataTables)
-                            api.page(pageNumber - 1).draw('page');
-                        } else {
-                            toast('Trang không hợp lệ!', { type: 'warning' })
-                        }
-
-                    });
-
-                    // $(api.columns().footer()).each(function (index) {
-                    //     const column = api.column(index);
-                    //     const header = $(this);
-                    //     if (!header.find("input").length) {
-                    //         const input = $('<input type="text" placeholder="Search" class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent my-2 px-2 py-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary">')
-                    //             .appendTo(header)
-                    //             .on("keyup change", function () {
-                    //                 if (column.search() !== (this as any).value) {
-                    //                     column.search((this as any).value).draw();
-                    //                 }
-                    //             });
-                    //     }
-                    // });
-                },
-                scrollCollapse: true,
-                scrollY: '200',
-                scrollX: true,
-                ajax: {
-                    url: '/api/product/advanceFind', dataSrc: 'data', type: 'POST', // Can also be GET depending on your server implementation
-                    contentType: 'application/json',
-                    data: ajaxDataFunc
-                },
-                columns: [{
-                    name: "name",
-                    data: 'name',
-                    // orderData: [0]
-                },
-                {
-                    data: 'category', name: 'category',
-                    // orderData: [0]
-
-                },
-                {
-                    data: 'description', name: 'description',
-                    // orderData: [0]
-
-                },
-                {
-                    name: 'price',
-                    data: 'price', render: function (data, type, row) {
-                        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9 }).format(data)
-                    },
-                    // orderData: [0]
-                },
-                ],
-                // dom: 'Bftip',
-                layout: {
-                    topEnd: {
-                        search: {
-                            processing: true
-                        },
-                    },
-                    topStart: {
-                        pageLength: {
-
-                        },
-                        buttons: [
-                            {
-                                extend: 'collection',
-                                text: 'Xuất dữ liệu',
-                                buttons: ['copy', 'excel', 'csv', 'pdf', 'print'],
-                                enabled: true
-                            }
-                        ]
-
-                    }
-                },
-                paging: true,
-                processing: true
-            });
-            table.colReorder.enable()
-            setDataTable(table)
-            dataTableRef.current = table
-        }
-    }, []);
 
     return (
 
@@ -269,9 +148,92 @@ export default function AdvanceFindProduct() {
 
             </div>
 
+            <DataTable
+                key="myTable" className="w-full table-auto break-words md:overflow-auto md:px-8"
 
+                options={{
+                    scrollCollapse: true,
+                    scrollY: '200',
+                    scrollX: true,
+                    orderMulti: true,
+                    serverSide: true,
+                    language: {
+                        "decimal": "",
+                        "emptyTable": "No data available in table",
+                        "info": "Hiển thị từ _START_ đến _END_ trên tổng _TOTAL_ dữ liệu",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "(lọc từ _MAX_ tổng số dữ liệu)",
+                        "infoPostFix": "",
+                        "thousands": ",",
+                        "lengthMenu": "Hiện _MENU_ dữ liệu",
+                        "loadingRecords": "Đang tải...",
+                        "processing": "",
+                        "search": "",
+                        "zeroRecords": "No matching records found",
+                        "paginate": {
+                            "first": "Trang đầu",
+                            "last": "Trang cuối",
+                            "next": "Trang kế",
+                            "previous": "Trang trước"
+                        },
+                        searchPlaceholder: "Tìm gì cũng được",
+                        "aria": {
+                            // "orderable": "Order by this column",
+                            // "orderableReverse": "Reverse order this column"
+                        }
+                    },
+                    layout: {
+                        topEnd: {
+                            search: {
+                                processing: true
+                            },
+                        },
+                        topStart: {
+                            pageLength: {
 
-            <table id="myTable" className="w-full table-auto break-words md:overflow-auto md:px-8">
+                            },
+                            // buttons: [
+                            //     {
+                            //         extend: 'collection',
+                            //         text: 'Xuất dữ liệu',
+                            //         buttons: ['copy', 'excel', 'csv', 'pdf', 'print'],
+                            //         enabled: true
+                            //     }
+                            // ]
+
+                        }
+                    },
+                    paging: true,
+                    processing: true
+                }}
+                columns={[{
+                    name: "name",
+                    data: 'name',
+                    // orderData: [0]
+                },
+                {
+                    data: 'category', name: 'category',
+                    // orderData: [0]
+
+                },
+                {
+                    data: 'description', name: 'description',
+                    // orderData: [0]
+
+                },
+                {
+                    name: 'price',
+                    data: 'price', render: function (data, type, row) {
+                        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9 }).format(data)
+                    },
+                    // orderData: [0]
+                },
+                ]}
+                ajax={{
+                    url: '/api/product/advanceFind', dataSrc: 'data', type: 'POST', // Can also be GET depending on your server implementation
+                    contentType: 'application/json',
+                    data: ajaxDataFunc
+                }}>
                 <thead>
                     <tr>
                         <th>Tên</th>
@@ -280,19 +242,11 @@ export default function AdvanceFindProduct() {
                         <th>Giá</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
-                {/* <tfoot>
-                    <tr>
-                        <th>Tên</th>
-                        <th>Mặt hàng</th>
-                        <th>Nội dung</th>
-                        <th>Giá</th>
-                    </tr>
-                </tfoot> */}
-            </table>
+            </DataTable>
+
+
 
             <ToastContainer stacked aria-label={''} />
-        </div>
+        </div >
     );
 }
