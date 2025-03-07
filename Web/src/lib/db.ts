@@ -14,6 +14,7 @@ if (!cached) {
 
 export async function connectToDatabase() {
     if (cached.conn) {
+        // Sử dụng để biết điểm khác biệt
         // await cached.conn.syncIndexes()
         return cached.conn;
     }
@@ -24,12 +25,6 @@ export async function connectToDatabase() {
         }).then(m => m.connection);
         
     }
-
-
-
     cached.conn = await cached.promise;
-    // cached.conn?.addListener('connected', (...arg) => {
-    //     console.log('ketnoir')
-    // })
     return cached.conn;
 }

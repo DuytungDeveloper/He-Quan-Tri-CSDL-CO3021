@@ -37,14 +37,13 @@ project-root/
 
 ```javascript
 {
-  _id: ObjectId(),             // ID tự động của MongoDB
-  productName: String,         // Tên sản phẩm
-  category: String,            // Danh mục sản phẩm
-  description: String,         // Mô tả chi tiết sản phẩm (có thể dùng cho text search)
-  price: Number,               // Giá sản phẩm
-  stock: Number,               // Số lượng tồn kho
-  createdAt: Date,             // Ngày tạo sản phẩm
-  updatedAt: Date              // Ngày cập nhật lần cuối
+  _id        : ObjectId(),   // ID tự động của MongoDB
+  name       : String,       // Tên sản phẩm
+  category   : String,       // Danh mục sản phẩm
+  description: String,       // Mô tả chi tiết sản phẩm (có thể dùng cho text search)
+  price      : Number,       // Giá sản phẩm
+  stock      : Number,       // Số lượng tồn kho
+  created_at : Date,         // Ngày tạo sản phẩm
 }
 ```
 
@@ -61,14 +60,13 @@ db.products.createIndex({ description: "text" });
 
 ```javascript
 {
-  _id: ObjectId(),
-  name: String,                // Họ và tên
-  email: String,               // Email (đặt unique index để tránh trùng lặp)
-  password: String,            // Mật khẩu đã được mã hóa
-  address: String,             // Địa chỉ
-  phone: String,               // Số điện thoại
-  createdAt: Date,
-  updatedAt: Date
+  _id       : ObjectId(),
+  username  : String,       // Họ và tên
+  email     : String,       // Email (đặt unique index để tránh trùng lặp)
+  password  : String,       // Mật khẩu đã được mã hóa
+  address   : String,       // Địa chỉ
+  phone     : String,       // Số điện thoại
+  created_at: Date
 }
 ```
 
@@ -84,21 +82,20 @@ db.users.createIndex({ email: 1 }, { unique: true });
 
 ```javascript
 {
-  _id: ObjectId(),
-  userId: ObjectId(),          // Tham chiếu đến Users._id
+  _id       : ObjectId(),
+  userId    : ObjectId(),                                           // Tham chiếu đến Users._id
   orderItems: [                // Mảng các sản phẩm trong đơn hàng
     {
-      productId: ObjectId(),   // Tham chiếu đến Products._id
-      productName: String,     // Lưu lại tên sản phẩm tại thời điểm đặt hàng (cho trường hợp giá, tên thay đổi sau này)
-      quantity: Number,        // Số lượng đặt mua
-      price: Number            // Giá sản phẩm tại thời điểm đặt hàng
+      productId  : ObjectId(),   // Tham chiếu đến Products._id
+      productName: String,       // Lưu lại tên sản phẩm tại thời điểm đặt hàng (cho trường hợp giá, tên thay đổi sau này)
+      quantity   : Number,       // Số lượng đặt mua
+      price      : Number        // Giá sản phẩm tại thời điểm đặt hàng
     }
   ],
-  totalPrice: Number,          // Tổng tiền của đơn hàng
-  orderDate: Date,             // Ngày đặt hàng
-  status: String,              // Trạng thái đơn hàng (vd: pending, confirmed, shipped, delivered)
-  createdAt: Date,
-  updatedAt: Date
+  totalPrice: Number,   // Tổng tiền của đơn hàng
+  orderDate : Date,     // Ngày đặt hàng
+  status    : String,   // Trạng thái đơn hàng (vd: pending, confirmed, shipped, delivered)
+  created_at: Date,
 }
 ```
 
@@ -237,13 +234,13 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
 [Link download](https://drive.google.com/file/d/1YkBCKJfKAettcVWIrbAUvs7eS59IjaXX/view?usp=sharing)
 
-Chạy lệnh này để restore dữ liệu 
+Chạy lệnh này để restore dữ liệu
 
 ```bash
 mongorestore he-quan-tri-csdl-2025-02-23
 ```
 
-Web 
+Web
 
 Template : https://nextadmin.co/
 
