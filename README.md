@@ -232,7 +232,7 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
 ## CSDL (MONGODB)
 
-[Link download](https://drive.google.com/file/d/1YkBCKJfKAettcVWIrbAUvs7eS59IjaXX/view?usp=sharing)
+[Link download](https://drive.google.com/file/d/1snIQaEeqRXD5brtMfsVjvMzYh9KMg4Su/view?usp=sharing)
 
 Chạy lệnh này để restore dữ liệu
 
