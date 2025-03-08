@@ -1,8 +1,15 @@
+import { optimizeProductTable } from '@/lib/optimizeDatabase';
 import mongoose, { Schema } from 'mongoose';
 
 const productSchema = new Schema({
-    name: String,
-    category: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    category: {
+        type: String,
+        required: true,
+    },
     description: String,
     price: Number,
     stock: Number,
@@ -10,8 +17,11 @@ const productSchema = new Schema({
 });
 
 const userSchema = new Schema({
-    username: String,
-    email: { type: String, unique: true },
+    username: {
+        type: String,
+        required: true,
+    },
+    email: { type: String, required: true, },
     password: String,
     address: String,
     phone: String,
@@ -39,10 +49,7 @@ const orderSchema = new Schema({
 // TransactionSchema.set("toJSON", { virtuals: true });
 // TransactionSchema.set("toObject", { virtuals: true });
 
-
-// // Check if the model is already compiled (important for hot reloading)
-// const Transaction: Model<ITransaction> = mongoose.models.Transaction || mongoose.model<ITransaction>('Transaction', TransactionSchema);
-// mongoose.models.Transaction || mongoose.model<ITransaction>('Transaction', TransactionSchema);
+// optimizeProductTable(productSchema)
 
 export const Product = mongoose.models.products || mongoose.model('products', productSchema);
 export const User = mongoose.models.users || mongoose.model('users', userSchema);

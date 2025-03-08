@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { client, dbName } from "./data-source.js";
+import { optimizeProductTable } from "./models.js";
 
 async function insertProducts(db) {
   const products = db.collection("products");
@@ -130,8 +131,21 @@ async function main() {
 
   return "done.";
 }
+async function optimize() {
+  await client.connect();
+  console.log("Connected successfully to server");
+  const db = client.db(dbName);
+  await optimizeProductTable(db);
+}
 
 main()
   .then(console.log)
   .catch(console.error)
   .finally(() => client.close());
+
+// optimize()
+//   .then(() => {
+//     console.log("DONE");
+//   })
+//   .catch(console.error)
+//   .finally(() => client.close());

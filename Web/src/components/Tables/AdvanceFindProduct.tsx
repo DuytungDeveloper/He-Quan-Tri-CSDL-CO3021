@@ -2,7 +2,7 @@
 import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 import 'datatables.net-buttons-dt/css/buttons.dataTables.css'; // Buttons CSS
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import Checkbox from '../FormElements/Checkboxes/Checkbox';
 
@@ -10,6 +10,9 @@ import DoubleRangeSlider from '../Slider/MultiRangeSlider';
 import dayjs from 'dayjs';
 import { debounce, throttle } from 'lodash';
 import dynamic from 'next/dynamic';
+import { DataTableRef } from 'datatables.net-react';
+import { Select } from '../FormElements/select';
+import { GlobeIcon } from '@/assets/icons';
 
 const DataTable = dynamic(
     async () => {
@@ -42,41 +45,23 @@ function _formatString(str: string) {
 }
 
 export default function AdvanceFindProduct() {
-
-    // const [dataTable, setDataTable] = useState<Api<any> | undefined>(undefined)
-    const dataTableRef = useRef<any>(null)
+    const dataTableRef = useRef<DataTableRef>(null)
     const [isFilterByCreditRange, setIsFilterByCreditRange] = useState(false);
-    const [isFilterByDateRange, setIsFilterByDateRange] = useState(false);
+    const [isFilterByCategory, setIsFilterByCategory] = useState(false);
+
     const [creditRange, setCreditRange] = useState([0, 0])
-    const [dateRange, setDateRange] = useState([0, 0])
+    const [categorySelected, setCategorySelected] = useState<string>()
 
     const [commonData, setCommonData] = useState<{ maxPrice: number, minPrice: number, category: string[] } | undefined>(undefined)
 
-    const reloadData = useRef(debounce(() => {
-        dataTableRef.current?.draw()
-    }, 1000)).current
-
-    useEffect(() => {
-        if (isFilterByCreditRange) {
-            reloadData()
-        }
-    }, [isFilterByCreditRange, creditRange])
-
-    useEffect(() => {
-        if (isFilterByDateRange) {
-            reloadData()
-        }
-    }, [isFilterByDateRange, dateRange])
-
-    useEffect(() => {
-        reloadData()
-    }, [isFilterByDateRange, isFilterByCreditRange])
+    const reloadData = useCallback(debounce(() => {
+        dataTableRef.current?.dt()?.ajax.reload()
+    }, 1000), [])
 
     useEffect(() => {
         fetch('/api/common').then(async (rs) => {
             const responseData = await rs.json()
             if (responseData) {
-
                 setCommonData({ ...responseData, minPrice: Number(responseData.minPrice), maxPrice: Number(responseData.maxPrice) })
                 setCreditRange([Number(responseData.minPrice), Number(responseData.maxPrice)])
             }
@@ -84,28 +69,139 @@ export default function AdvanceFindProduct() {
     }, [])
 
     const isFilterByCreditRangeRef = useRef(isFilterByCreditRange)
-    const isFilterByDateRangeRef = useRef(isFilterByDateRange)
+    const isFilterByCategoryRef = useRef(isFilterByCreditRange)
+
     const creditRangeRef = useRef(creditRange)
-    const dateRangeRef = useRef(dateRange)
+    const categorySelectedRef = useRef(categorySelected)
+
 
     useEffect(() => {
         isFilterByCreditRangeRef.current = isFilterByCreditRange
-        isFilterByDateRangeRef.current = isFilterByDateRange
         creditRangeRef.current = creditRange
-        dateRangeRef.current = dateRange
-    }, [isFilterByCreditRange, isFilterByDateRange, creditRange, dateRange])
+
+        isFilterByCategoryRef.current = isFilterByCategory
+        categorySelectedRef.current = categorySelected
+
+        let r = false
+        if (isFilterByCategory && categorySelected) {
+            r = true
+        }
+
+        if (r === false && isFilterByCreditRange) {
+            r = true
+        }
+
+        if (r)
+            reloadData()
+    }, [isFilterByCreditRange, creditRange, isFilterByCategory, categorySelected])
 
     const ajaxDataFunc = useRef((d: any) => {
 
         d.data = {
             price: isFilterByCreditRangeRef.current ? creditRangeRef.current : undefined,
-            date: isFilterByDateRangeRef.current ? dateRangeRef.current : undefined
+            category: isFilterByCategoryRef.current ? categorySelectedRef.current : undefined,
         }
         if (d?.search?.value) {
             d.search.value = _formatString(d.search.value)
         }
         return JSON.stringify(d); // Convert DataTables data to JSON format
     }).current
+
+    const options = useMemo(() => {
+        return {
+            order: [],
+            scrollCollapse: true,
+            scrollY: '200',
+            scrollX: true,
+            orderMulti: true,
+            serverSide: true,
+            columns: [{
+                name: "name",
+                data: 'name',
+                // orderData: [0]
+            },
+            {
+                data: 'category', name: 'category',
+                // orderData: [0]
+
+            },
+            {
+                data: 'description', name: 'description',
+                // orderData: [0]
+
+            },
+            {
+                name: 'price',
+                data: 'price', render: function (data: any, type: any, row: any) {
+                    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9 }).format(data)
+                },
+                // orderData: [0]
+            },
+            ],
+            ajax: {
+                url: '/api/product/advanceFind',
+                dataSrc: 'data',
+                type: 'POST', // Can also be GET depending on your server implementation
+                contentType: 'application/json',
+                data: ajaxDataFunc,
+            },
+            language: {
+                "decimal": "",
+                "emptyTable": "No data available in table",
+                "info": "Hiển thị từ _START_ đến _END_ trên tổng _TOTAL_ dữ liệu",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(lọc từ _MAX_ tổng số dữ liệu)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Hiện _MENU_ dữ liệu",
+                "loadingRecords": "Đang tải...",
+                "processing": "",
+                "search": "",
+                "zeroRecords": "No matching records found",
+                "paginate": {
+                    "first": "Trang đầu",
+                    "last": "Trang cuối",
+                    "next": "Trang kế",
+                    "previous": "Trang trước"
+                },
+                searchPlaceholder: "Tìm kiếm tương đối theo tên, danh mục và mô tả",
+                "aria": {
+                    // "orderable": "Order by this column",
+                    // "orderableReverse": "Reverse order this column"
+                }
+            },
+            layout: {
+                topEnd: {
+                    search: {
+                        processing: true
+                    },
+                },
+                topStart: {
+                    pageLength: {
+
+                    },
+                    // buttons: [
+                    //     {
+                    //         extend: 'collection',
+                    //         text: 'Xuất dữ liệu',
+                    //         buttons: ['copy', 'excel', 'csv', 'pdf', 'print'],
+                    //         enabled: true
+                    //     }
+                    // ]
+
+                }
+            },
+            paging: true,
+            processing: true,
+            searchDelay: 300
+        }
+    }, [])
+
+
+
+
+
+
 
 
     return (
@@ -122,6 +218,26 @@ export default function AdvanceFindProduct() {
                             initialValues={[1, commonData.maxPrice]}
                             onChange={setCreditRange}
                             step={0.1}
+                        />}
+                    </div>
+                </div>
+
+                <div className='basis-1/2'>
+                    <div className='mb-5 block'>
+                        <Checkbox label='Lọc theo danh mục' isChecked={isFilterByCategory} onChange={setIsFilterByCategory} />
+                    </div>
+                    <div className='relative pl-3.5 pr-5'>
+                        {commonData && <Select
+                            items={
+                                commonData.category.map(x => ({
+                                    label: x, value: x
+                                }))
+                            }
+                            onChange={(v) => {
+                                setCategorySelected(v)
+                            }}
+                            placeholder='Chọn danh mục'
+                            prefixIcon={<GlobeIcon />}
                         />}
                     </div>
                 </div>
@@ -149,91 +265,11 @@ export default function AdvanceFindProduct() {
             </div>
 
             <DataTable
-                key="myTable" className="w-full table-auto break-words md:overflow-auto md:px-8"
-
-                options={{
-                    scrollCollapse: true,
-                    scrollY: '200',
-                    scrollX: true,
-                    orderMulti: true,
-                    serverSide: true,
-                    language: {
-                        "decimal": "",
-                        "emptyTable": "No data available in table",
-                        "info": "Hiển thị từ _START_ đến _END_ trên tổng _TOTAL_ dữ liệu",
-                        "infoEmpty": "Showing 0 to 0 of 0 entries",
-                        "infoFiltered": "(lọc từ _MAX_ tổng số dữ liệu)",
-                        "infoPostFix": "",
-                        "thousands": ",",
-                        "lengthMenu": "Hiện _MENU_ dữ liệu",
-                        "loadingRecords": "Đang tải...",
-                        "processing": "",
-                        "search": "",
-                        "zeroRecords": "No matching records found",
-                        "paginate": {
-                            "first": "Trang đầu",
-                            "last": "Trang cuối",
-                            "next": "Trang kế",
-                            "previous": "Trang trước"
-                        },
-                        searchPlaceholder: "Tìm gì cũng được",
-                        "aria": {
-                            // "orderable": "Order by this column",
-                            // "orderableReverse": "Reverse order this column"
-                        }
-                    },
-                    layout: {
-                        topEnd: {
-                            search: {
-                                processing: true
-                            },
-                        },
-                        topStart: {
-                            pageLength: {
-
-                            },
-                            // buttons: [
-                            //     {
-                            //         extend: 'collection',
-                            //         text: 'Xuất dữ liệu',
-                            //         buttons: ['copy', 'excel', 'csv', 'pdf', 'print'],
-                            //         enabled: true
-                            //     }
-                            // ]
-
-                        }
-                    },
-                    paging: true,
-                    processing: true
-                }}
-                columns={[{
-                    name: "name",
-                    data: 'name',
-                    // orderData: [0]
-                },
-                {
-                    data: 'category', name: 'category',
-                    // orderData: [0]
-
-                },
-                {
-                    data: 'description', name: 'description',
-                    // orderData: [0]
-
-                },
-                {
-                    name: 'price',
-                    data: 'price', render: function (data, type, row) {
-                        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 9 }).format(data)
-                    },
-                    // orderData: [0]
-                },
-                ]}
-                ajax={{
-                    url: '/api/product/advanceFind', dataSrc: 'data', type: 'POST', // Can also be GET depending on your server implementation
-                    contentType: 'application/json',
-                    data: ajaxDataFunc
-                }}>
+                key="myTable"
+                ref={dataTableRef}
+                className="w-full table-auto break-words md:overflow-auto md:px-8"
+                options={options}
+            >
                 <thead>
                     <tr>
                         <th>Tên</th>

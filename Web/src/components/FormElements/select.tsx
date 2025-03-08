@@ -5,14 +5,15 @@ import { cn } from "@/lib/utils";
 import { useId, useState } from "react";
 
 type PropsType = {
-  label: string;
+  label?: string;
   items: { value: string; label: string }[];
   prefixIcon?: React.ReactNode;
   className?: string;
+  onChange?: (val: string) => void
 } & (
-  | { placeholder?: string; defaultValue: string }
-  | { placeholder: string; defaultValue?: string }
-);
+    | { placeholder?: string; defaultValue: string }
+    | { placeholder: string; defaultValue?: string }
+  );
 
 export function Select({
   items,
@@ -21,6 +22,7 @@ export function Select({
   placeholder,
   prefixIcon,
   className,
+  ...props
 }: PropsType) {
   const id = useId();
 
@@ -28,12 +30,12 @@ export function Select({
 
   return (
     <div className={cn("space-y-3", className)}>
-      <label
+      {label && <label
         htmlFor={id}
         className="block text-body-sm font-medium text-dark dark:text-white"
       >
         {label}
-      </label>
+      </label>}
 
       <div className="relative">
         {prefixIcon && (
@@ -45,7 +47,10 @@ export function Select({
         <select
           id={id}
           defaultValue={defaultValue || ""}
-          onChange={() => setIsOptionSelected(true)}
+          onChange={(event) => {
+            setIsOptionSelected(true)
+            props.onChange?.(event.target.value)
+          }}
           className={cn(
             "w-full appearance-none rounded-lg border border-stroke bg-transparent px-5.5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary [&>option]:text-dark-5 dark:[&>option]:text-dark-6",
             isOptionSelected && "text-dark dark:text-white",

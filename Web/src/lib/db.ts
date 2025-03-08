@@ -14,16 +14,14 @@ if (!cached) {
 
 export async function connectToDatabase() {
     if (cached.conn) {
-        // Sử dụng để biết điểm khác biệt
-        // await cached.conn.syncIndexes()
         return cached.conn;
     }
 
     if (!cached.promise) {
-        cached.promise = mongoose.connect(MONGO_URI,{
-            dbName : 'he-quan-tri-csdl'
+        cached.promise = mongoose.connect(MONGO_URI, {
+            dbName: 'he-quan-tri-csdl'
         }).then(m => m.connection);
-        
+
     }
     cached.conn = await cached.promise;
     return cached.conn;
