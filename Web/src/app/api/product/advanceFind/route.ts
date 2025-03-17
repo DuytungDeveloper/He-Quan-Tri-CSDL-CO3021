@@ -356,6 +356,7 @@ export async function POST(request: NextRequest) {
             category: 1,
             price: 1,
             description: 1,
+            stock: 1
             // Add other fields needed for the DataTable display here.
         }
     })

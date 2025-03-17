@@ -38,6 +38,7 @@
     "react-select": "^5.10.0",
     "react-table": "^7.8.0",
     "react-toastify": "^11.0.5",
+    "sweetalert2": "^11.17.2",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
