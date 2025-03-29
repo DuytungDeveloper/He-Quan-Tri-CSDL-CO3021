@@ -52,6 +52,10 @@ project-root/
   - Tiếp tục gõ lệnh : `yarn dev`
   - Đoạn code ở đây để tạo ra CSDL ở phần ***Schema*** và insert vào CSDL ở ***docker*** (Lưu ý có thể chạy hơi lâu để yên cho chạy đến khi thấy dòng ```Tạo CSDL xong``` thì có thể tắt)
 
+- Bước 4 :
+
+    - Vào 
+
 
 ## Schema
 
