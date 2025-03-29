@@ -257,7 +257,7 @@ db.orders.createIndex({ userId: 1, orderDate: -1 });
 
 - Đào Duy Tùng : Cấu trúc báo cáo cơ bản, research cơ bản, recap các tuần, voting công nghệ, docker file, tạo dữ liệu vài triệu dữ liệu, ....
 
-## CSDL (MONGODB)
+<!-- ## CSDL (MONGODB)
 
 [Link download](https://drive.google.com/file/d/1snIQaEeqRXD5brtMfsVjvMzYh9KMg4Su/view?usp=sharing)
 
@@ -265,7 +265,7 @@ Chạy lệnh này để restore dữ liệu
 
 ```bash
 mongorestore he-quan-tri-csdl-2025-02-23
-```
+``` -->
 
 ## Web
 
