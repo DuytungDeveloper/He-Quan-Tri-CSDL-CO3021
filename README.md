@@ -46,15 +46,16 @@ project-root/
 
   - Bật terminal trỏ vào thư mục `Dockers` : Gõ lệnh `docker compose up -d` (Lệnh này dùng để tạo CSDL mongodb trên docker để sử dụng. Tk : admin, Password : admin123)
 
-- Bước 3 :
+- Bước 4 :
 
   - Bật terminal trỏ vào thư mục `PrepareDatabase` : Gõ lệnh `yarn` để cài đặt các thư viện cần thiết
   - Tiếp tục gõ lệnh : `yarn dev`
   - Đoạn code ở đây để tạo ra CSDL ở phần ***Schema*** và insert vào CSDL ở ***docker*** (Lưu ý có thể chạy hơi lâu để yên cho chạy đến khi thấy dòng ```Tạo CSDL xong``` thì có thể tắt)
 
-- Bước 4 :
+- Bước 5 :
 
-    - Vào 
+    - Bật terminal trỏ vào thư mục `Web` : Gõ lệnh `yarn` để cài đặt các thư viện cần thiết
+    - Gõ lệnh ```yarn dev``` để chạy web
 
 
 ## Schema
