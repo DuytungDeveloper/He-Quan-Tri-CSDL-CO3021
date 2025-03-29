@@ -2,7 +2,7 @@ name: he-quan-tri-csdl
 services:
   mongodb:
     image: mongo:8.0.5
-    restart: always
+    # restart: always
     ports:
       - 27017:27017
     environment:

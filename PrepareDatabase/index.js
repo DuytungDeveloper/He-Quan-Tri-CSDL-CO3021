@@ -141,7 +141,10 @@ async function optimize() {
 main()
   .then(console.log)
   .catch(console.error)
-  .finally(() => client.close());
+  .finally(() => {
+    console.log("Tạo CSDL xong");
+    client.close();
+  });
 
 // optimize()
 //   .then(() => {

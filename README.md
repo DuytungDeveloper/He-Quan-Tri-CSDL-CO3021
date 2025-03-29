@@ -31,6 +31,28 @@ project-root/
 └── LICENSE                # Thông tin bản quyền dự án
 ```
 
+## Hướng dẫn cài đặt
+
+- Bước 1 :
+
+  - Cài đặt môi trường NodeJS : https://nodejs.org/en/download
+  - Cài đặt yarn : Gõ lệnh vào terminal trên máy `npm install --global yarn`
+
+- Bước 2 :
+
+  - Cài đặt docker : https://docs.docker.com/engine/install/
+
+- Bước 3 :
+
+  - Bật terminal trỏ vào thư mục `Dockers` : Gõ lệnh `docker compose up -d` (Lệnh này dùng để tạo CSDL mongodb trên docker để sử dụng. Tk : admin, Password : admin123)
+
+- Bước 3 :
+
+  - Bật terminal trỏ vào thư mục `PrepareDatabase` : Gõ lệnh `yarn` để cài đặt các thư viện cần thiết
+  - Tiếp tục gõ lệnh : `yarn dev`
+  - Đoạn code ở đây để tạo ra CSDL ở phần ***Schema*** và insert vào CSDL ở ***docker*** (Lưu ý có thể chạy hơi lâu để yên cho chạy đến khi thấy dòng ```Tạo CSDL xong``` thì có thể tắt)
+
+
 ## Schema
 
 ### Products (5_000_000 Dữ liệu)
@@ -240,7 +262,7 @@ Chạy lệnh này để restore dữ liệu
 mongorestore he-quan-tri-csdl-2025-02-23
 ```
 
-Web
+## Web
 
 Template : https://nextadmin.co/
 
