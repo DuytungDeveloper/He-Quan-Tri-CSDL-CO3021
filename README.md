@@ -26,6 +26,9 @@ project-root/
 ├── Dockers/                # Chứa các file docker triển khai
 │   ├── .......
 │
+├── Web/                    # Chứa các file làm web dự án
+│   ├── .......
+│
 ├── .gitignore             # File cấu hình bỏ qua khi commit
 ├── README.md              # Hướng dẫn sử dụng và deploy dự án
 └── LICENSE                # Thông tin bản quyền dự án
