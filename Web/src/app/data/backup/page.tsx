@@ -4,6 +4,7 @@ import { TopChannels } from "@/components/Tables/top-channels";
 import { TopChannelsSkeleton } from "@/components/Tables/top-channels/skeleton";
 import { TopProducts } from "@/components/Tables/top-products";
 import { TopProductsSkeleton } from "@/components/Tables/top-products/skeleton";
+import Orderform from "@/components/Backupdata/Orderform";
 
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -21,7 +22,9 @@ const DataBackupPage = () => {
             </h2>
 
             <div className="space-y-10">
+                <Orderform />
             </div>
+
         </>
     );
 };

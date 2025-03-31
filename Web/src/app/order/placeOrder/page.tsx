@@ -7,6 +7,7 @@ import { TopProductsSkeleton } from "@/components/Tables/top-products/skeleton";
 
 import { Metadata } from "next";
 import { Suspense } from "react";
+import Orderform from "@/components/Backupdata/Orderform";
 
 export const metadata: Metadata = {
     title: "Đặt hàng",
@@ -22,7 +23,7 @@ const OrderPlacePage = () => {
 
             <div className="space-y-10">
                 <Suspense fallback={<TopProductsSkeleton />}>
-                    <TopProducts />
+                    <Orderform />
                 </Suspense>
             </div>
         </>
