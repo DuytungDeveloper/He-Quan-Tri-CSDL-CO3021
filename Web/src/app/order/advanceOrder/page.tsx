@@ -196,12 +196,12 @@ const AdvanceOrderPage = () => {
                                 {loading ? (
                                     <div className="flex items-center justify-center gap-2">
                                         Đang xử lý...
-                                    </div>
+                                    </div >
                                 ) : (
                                     "🚀 Mô phỏng đặt hàng"
                                 )}
-                            </Button>
-                        </div>
+                            </Button >
+                        </div >
 
                         <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-xl shadow-inner space-y-4">
                             <h4 className="text-xl font-semibold text-gray-800 dark:text-white">📋 Kết quả đặt hàng:</h4>
@@ -235,9 +235,9 @@ const AdvanceOrderPage = () => {
                                 ))
                             )}
                         </div>
-                    </div>
-                </Suspense>
-            </div>
+                    </div >
+                </Suspense >
+            </div >
         </>
     );
 };
