@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://admin:admin123@localhost:27017/admin?ssl=false';
+
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://admin:admin123@localhost:27017';
 
 if (!MONGO_URI) {
     throw new Error('Please define the MONGODB_URI environment variable');
@@ -19,7 +20,10 @@ export async function connectToDatabase() {
 
     if (!cached.promise) {
         cached.promise = mongoose.connect(MONGO_URI, {
-            dbName: 'he-quan-tri-csdl'
+            dbName: process.env.MONGODB_DB_NAME || 'he-quan-tri-csdl',
+            authSource: process.env.MONGODB_DB_AUTHSOURCE || 'admin',
+            directConnection: process.env.DIRECT_CONNECTION === 'true' ? true : false,
+            ssl: process.env.SSL === 'true' ? true : false
         }).then(m => m.connection);
 
     }

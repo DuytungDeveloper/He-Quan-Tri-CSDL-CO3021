@@ -1,0 +1,98 @@
+.bagde-danger {
+  border-radius: 16px;
+  background: linear-gradient(310deg, #f64f39, #fab534);
+  text-align: center;
+  padding: 3px 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 100%;
+
+  &.hide {
+    display: none;
+  }
+}
+
+.bagde-info {
+  border-radius: 16px;
+  background: linear-gradient(310deg, #2152ff, #21d4fd);
+  text-align: center;
+  padding: 3px 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 100%;
+
+  &.hide {
+    display: none;
+  }
+}
+
+.bagde-success {
+  border-radius: 16px;
+  background: linear-gradient(310deg, #2cb735, #82e12f);
+  text-align: center;
+  padding: 3px 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.btn {
+  font-size: 26px;
+  line-height: 1;
+  text-transform: none;
+  font-weight: 500;
+  gap: 5px;
+  background: linear-gradient(310deg, #141727, #3a416f) !important;
+  transition: transform 0.2s ease;
+}
+.btn:hover {
+  opacity: 1;
+  cursor: pointer;
+  transform: scale(1.1);
+}
+.btn:active {
+  transform: translateY(1.5px);
+}
+
+.header-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-name {
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 800;
+}
+.error-message {
+  background-color: rgb(254 235 235);
+  color: #f63a46;
+  border: 1px solid #f63a46;
+}
+
+.success-message {
+  background-color: rgb(233 251 240);
+  color: #54cb33;
+}
+
+.error-message > .info {
+  padding: 8px;
+  background: linear-gradient(310deg, #ee181c, #fc586b) !important;
+  color: #fff !important;
+}
+
+.success-message > .info {
+  padding: 8px;
+  background: linear-gradient(310deg, #038f81, #03d9c4);
+  color: #fff !important;
+  font-weight: 800;
+}
+.result-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 800;
+}
