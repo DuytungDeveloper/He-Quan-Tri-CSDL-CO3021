@@ -1,11 +1,41 @@
 name: he-quan-tri-csdl
 services:
   mongodb:
-    image: mongo:8.0.5
-    # restart: always
+    image: mongo:8
+    container_name: mongodb
     ports:
-      - 27017:27017
+      - "27017:27017"
     environment:
       - MONGO_INITDB_DATABASE=test
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME:-admin}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD:-admin123}
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo_keyfile:/etc/mongo_keyfile
+      - ./mongod.conf:/etc/mongod.conf
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      retries: 5
+      start_period: 40s
+    command: ["mongod", "--config", "/etc/mongod.conf"]
+
+  mongo-init:
+    image: mongo:8
+    container_name: he-quan-tri-csdl-init
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    command: >
+      bash -c "
+        sleep 5 &&
+        mongosh --host mongodb:27017 -u admin -p admin123 --authenticationDatabase admin --eval '
+          rs.initiate({
+            _id: \"rs0\",
+            members: [ { _id: 0, host: \"mongodb:27017\" } ]
+          });
+        '
+      "
+
+volumes:
+  mongo-data:
