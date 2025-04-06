@@ -47,6 +47,7 @@ project-root/
 
 - Bước 3 :
 
+  - Bật terminal trỏ vào thư mục `Dockers` : Gõ lệnh `chmod 600 mongod.conf` , `chmod 600 mongo_keyfile` (Lệnh này để cấp quyền cho docker sử dụng file) 
   - Bật terminal trỏ vào thư mục `Dockers` : Gõ lệnh `docker compose up -d` (Lệnh này dùng để tạo CSDL mongodb trên docker để sử dụng. Tk : admin, Password : admin123)
 
 - Bước 4 :
