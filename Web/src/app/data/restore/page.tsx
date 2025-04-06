@@ -18,6 +18,11 @@ const DataRestorePage = () => {
             <Breadcrumb pageName="Phục hồi Dữ liệu" />
             <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
                 Minh họa quá trình phục hồi dữ liệu từ bản sao lưu khi xảy ra sự cố.
+                {/* // c. Update - Cập nhật giá sản phẩm
+db.products.updateOne(
+  { _id: ObjectId("PRODUCT_ID") },
+  { $set: { price: 1400 } }
+); */}
             </h2>
 
             <div className="space-y-10">
