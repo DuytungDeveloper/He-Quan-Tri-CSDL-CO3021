@@ -126,9 +126,11 @@ async function main() {
   await insertProducts(db); // Done 5_000_000 product
   await insertUsers(db); // Done 1_000_000 user
   await insertOrders(db);
+  console.log("Tạo CSDL xong");
   // mongodump --host localhost --port 27017 --username admin --password admin123 --authenticationDatabase admin --db he-quan-tri-csdl --out /backup/he-quan-tri-csdl-2025-02-23
   // sudo docker cp de7297e2da84ec18507dbd81610cc78b685583bd3a59403e207ce9cc258b9cc3:/backup /Users/daoduytung/Datas/Private/BACHKHOA/He-Quan-Tri-CSDL-CO3021/Dockers/backups
-
+  await optimize();
+  console.log("Tạo Index xong");
   return "done.";
 }
 async function optimize() {
@@ -142,7 +144,7 @@ main()
   .then(console.log)
   .catch(console.error)
   .finally(() => {
-    console.log("Tạo CSDL xong");
+    console.log("Setup xong MongoDB");
     client.close();
   });
 
