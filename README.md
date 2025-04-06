@@ -47,14 +47,10 @@ project-root/
 
 - Bước 3 :
 
-  - Cài đặt openssl : [Window](https://help.tenten.vn/https-tenten-vn-help-huong-dan-cai-dat-openssl-tren-win10/) , [MacOS](https://huongdanjava.com/vi/cai-dat-openssl-tu-source-tren-macos.html) , [Ubuntu](https://tailieu.hostingviet.vn/cai-dat-openssl-tren-linux/) dùng để tạo key cho ***mongodb***
-
-- Bước 4 :
-
   - Bật terminal : chạy lệnh `chmod +x setup.sh` và `./setup.sh` (Lệnh này dùng để tạo CSDL mongodb trên docker để sử dụng. Tk : admin, Password : admin123, đồng thời tạo dữ liệu mock và đánh index)
   - ***Lưu ý*** : có thể chạy hơi lâu để yên cho chạy đến khi thấy dòng ```Data and indexes setup completed successfully!``` thì có thể tắt
 
-- Bước 5 :
+- Bước 4 :
 
     - Bật terminal trỏ vào thư mục `Web` : Gõ lệnh `yarn` để cài đặt các thư viện cần thiết
     - Gõ lệnh ```yarn dev``` để chạy web
