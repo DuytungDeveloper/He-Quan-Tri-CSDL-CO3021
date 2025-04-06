@@ -14,7 +14,7 @@ echo "Generating MongoDB keyfile..."
 ./generate-keyfile.sh
 
 echo "Starting Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 echo "Waiting for MongoDB to initialize..."
 sleep 15
