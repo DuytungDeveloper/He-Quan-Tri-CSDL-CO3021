@@ -18,7 +18,7 @@ export default function CreateOrder() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const url = `http://localhost:3000/api/product/getAllProduct?category=${selectedCategory}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+                const url = `/api/product/getAllProduct?category=${selectedCategory}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
                 const response = await fetch(url);
                 const apiResponse = await response.json();
                 const transformedProducts = apiResponse.data.map((item: any, index: number) => ({
@@ -60,7 +60,7 @@ export default function CreateOrder() {
 
         // Gửi orderData lên server
         try {
-            const response = await fetch("http://localhost:3000/api/product/getAllProduct", {
+            const response = await fetch("/api/product/getAllProduct", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
