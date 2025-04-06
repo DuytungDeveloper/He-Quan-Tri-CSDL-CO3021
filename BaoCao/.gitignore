@@ -9,7 +9,6 @@
 *.lot
 *.dvi
 *.ps
-*.pdf
 *.synctex*
 *.fdb_latexmk
 *.fls

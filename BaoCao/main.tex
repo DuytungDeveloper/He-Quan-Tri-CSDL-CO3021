@@ -1,4 +1,4 @@
-    \documentclass{article}
+\documentclass{article}
 %------------------------- packages -------------------------%
 \usepackage[vietnamese.licr]{babel}
 \usepackage{listings}
@@ -28,8 +28,9 @@
 \usepackage{lastpage}
 \usepackage{CJKutf8}
 \usepackage{xcolor}
-
-
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\usepackage{booktabs}
 %------------------------- set up -------------------------%
 % figure
 \graphicspath{{./Images/}}              % path to image
@@ -51,6 +52,50 @@
     %linenos,               % enables line numbers
     fontsize=\footnotesize
 }
+
+
+\lstdefinestyle{sql}{
+  language=SQL,
+  basicstyle=\ttfamily\footnotesize, % Use a monospaced font and smaller size
+  numbers=left,                   % Display line numbers on the left
+  numberstyle=\tiny\color{gray}, % Style for line numbers
+  stepnumber=1,                   % Number every line
+  numbersep=5pt,                  % Space between line numbers and code
+  showspaces=false,                % Don't show spaces as special characters
+  showstringspaces=false,          % Don't show spaces in strings as special characters
+  showtabs=false,                  % Don't show tabs as special characters
+  tabsize=2,                       % Set tab size to 2 spaces
+  captionpos=b,                   % Position of the caption at the bottom
+  breaklines=true,                 % Enable line breaking if code exceeds line width
+  breakatwhitespace=false,         % Break lines only at whitespace
+  commentstyle=\color{green!60!black}\textit, % Style for comments
+  stringstyle=\color{red},       % Style for strings
+  keywordstyle=\color{blue}\bfseries, % Style for keywords
+  identifierstyle=\color{black},  % Style for identifiers
+  otherkeywords={AS},             % Add other SQL keywords if needed
+}
+
+\lstdefinestyle{mongodb}{
+  language=JavaScript, % MongoDB queries are JavaScript objects
+  basicstyle=\ttfamily\footnotesize, % Use a monospaced font and smaller size
+  numbers=left,                   % Display line numbers on the left
+  numberstyle=\tiny\color{gray}, % Style for line numbers
+  stepnumber=1,                   % Number every line
+  numbersep=5pt,                  % Space between line numbers and code
+  showspaces=false,                % Don't show spaces as special characters
+  showstringspaces=false,          % Don't show spaces in strings as special characters
+  showtabs=false,                  % Don't show tabs as special characters
+  tabsize=2,                       % Set tab size to 2 spaces
+  captionpos=b,                   % Position of the caption at the bottom
+  breaklines=true,                 % Enable line breaking if code exceeds line width
+  breakatwhitespace=false,         % Break lines only at whitespace
+  commentstyle=\color{green!60!black}\textit, % Style for comments
+  stringstyle=\color{red},       % Style for strings
+  keywordstyle=\color{blue}\bfseries, % Style for keywords (JavaScript keywords will be highlighted)
+  otherkeywords={db, collection, find, insertOne, insertMany, updateOne, updateMany, deleteOne, deleteMany, aggregate, countDocuments, distinct}, % Add common MongoDB methods as keywords
+  identifierstyle=\color{black},  % Style for identifiers
+}
+
 % Table addrow Macro with dyanamic
 % Define the new addrow command to accept a variable number of arguments
 \NewDocumentCommand{\addrow}{>{\SplitList{;}}m}{%
@@ -190,7 +235,7 @@
     Đào Duy Tùng& 2033364\\
 & & Huỳnh Huynh Mân & 2033364\\
 & & Vũ Trường Khoa& 2252867\\
-& & Tôn Trọng Tín & 2333464\\
+& & Tôn Trọng Tín & 2033338\\
 \end{tabular}
 \textbf{\textit{}}\end{table}
 
