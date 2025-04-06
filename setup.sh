@@ -10,11 +10,6 @@ echo "============================================"
 # Create Docker directory if it doesn't exist
 cd Dockers
 
-echo "Generating MongoDB keyfile..."
-./generate-keyfile.sh
-
-chmod 777 mongodb-keyfile
-
 echo "Starting Docker containers..."
 docker compose up -d
 

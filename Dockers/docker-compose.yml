@@ -7,18 +7,27 @@ services:
     ports:
       - "27018:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
+      - MONGO_INITDB_DATABASE=he-quan-tri-csdl
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD:-admin123}
     volumes:
       - mongodb_data:/data/db
-      - ./mongodb-keyfile:/data/mongodb-keyfile
-    command: ["--replSet", "rs0", "--bind_ip_all", "--keyFile", "/data/mongodb-keyfile"]
+    entrypoint: >
+      /bin/bash -c '
+      openssl rand -base64 756 > /data/keyfile.key &&
+      chmod 400 /data/keyfile.key &&
+      chown mongodb:mongodb /data/keyfile.key &&
+      /usr/local/bin/docker-entrypoint.sh mongod --replSet rs0 --keyFile /data/keyfile.key --bind_ip_all'
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
+      test: mongosh
+        -u $${MONGO_INITDB_ROOT_USERNAME}
+        -p $${MONGO_INITDB_ROOT_PASSWORD}
+        --eval "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo-1:27017',priority:1},{_id:1,host:'mongo-2:27017',priority:0.5},{_id:2,host:'mongo-3:27017',priority:0.5}]}) }" | mongosh --port 27017 --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
 
 volumes:
   mongodb_data:
