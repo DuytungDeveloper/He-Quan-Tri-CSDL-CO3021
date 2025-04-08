@@ -17,6 +17,12 @@ export default function OrderListPage() {
     const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
     const [showModal, setShowModal] = useState(false);
 
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
+
+    const totalPages = Math.ceil(filteredOrders.length / limit);
+    const paginatedOrders = filteredOrders.slice((page - 1) * limit, page * limit);
+
     const fetchOrders = async () => {
         try {
             const res = await fetch("/api/orders");
@@ -45,6 +51,7 @@ export default function OrderListPage() {
             result = result.filter((o) => o.status === filterStatus);
         }
         setFilteredOrders(result);
+        setPage(1);
     }, [filterUser, filterStatus, orders]);
 
     return (
@@ -52,7 +59,6 @@ export default function OrderListPage() {
             <Breadcrumb pageName="Danh sách đơn hàng" />
             <h2 className="mb-4 text-2xl font-bold">Lọc và xem chi tiết các đơn hàng đã đặt</h2>
 
-            {/* Bộ lọc */}
             <div className="flex flex-wrap gap-4 mb-6">
                 <Input
                     placeholder="Tìm theo tên khách hàng"
@@ -81,56 +87,73 @@ export default function OrderListPage() {
             {loading ? (
                 <p>Đang tải đơn hàng...</p>
             ) : (
-                <div className="overflow-x-auto mt-4 rounded-xl bg-white shadow-lg p-6">
-                    <table className="w-full table-auto">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="p-3 text-left">Khách hàng</th>
-                                <th className="p-3 text-left">Số sản phẩm</th>
-                                <th className="p-3 text-left">Tổng tiền</th>
-                                <th className="p-3 text-left">Ngày đặt</th>
-                                <th className="p-3 text-left">Trạng thái</th>
-                                <th className="p-3 text-left">Chi tiết</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredOrders.map((order, idx) => (
-                                <tr key={idx} className="border-b hover:bg-gray-50">
-                                    <td className="p-3">{order.userId?.username || order.userId}</td>
-                                    <td className="p-3">{order.orderItems.length}</td>
-                                    <td className="p-3">{order.totalPrice.toLocaleString()}₫</td>
-                                    <td className="p-3">{new Date(order.orderDate).toLocaleString("vi-VN")}</td>
-                                    <td className="p-3">
-                                        <span className={`badge ${order.status === "pending"
-                                            ? "badge-pending"
-                                            : order.status === "completed"
-                                                ? "badge-completed"
-                                                : "badge-cancelled"
-                                            }`}>
-                                            {order.status === "pending"
-                                                ? "Đang xử lý"
-                                                : order.status === "completed"
-                                                    ? "Hoàn tất"
-                                                    : "Đã huỷ"}
-                                        </span>
-                                    </td>
-                                    <td className="p-3">
-                                        <Button size="sm" onClick={() => {
-                                            setSelectedOrder(order);
-
-                                            setShowModal(true);
-                                        }}>
-                                            Xem
-                                        </Button>
-                                    </td>
+                <>
+                    <div className="overflow-x-auto mt-4 rounded-xl bg-white shadow-lg p-6">
+                        <table className="w-full table-auto">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="p-3 text-left">Khách hàng</th>
+                                    <th className="p-3 text-left">Số sản phẩm</th>
+                                    <th className="p-3 text-left">Tổng tiền</th>
+                                    <th className="p-3 text-left">Ngày đặt</th>
+                                    <th className="p-3 text-left">Trạng thái</th>
+                                    <th className="p-3 text-left">Chi tiết</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                {paginatedOrders.map((order, idx) => (
+                                    <tr key={idx} className="border-b hover:bg-gray-50">
+                                        <td className="p-3">{order.userId?.username || order.userId}</td>
+                                        <td className="p-3">{order.orderItems.length}</td>
+                                        <td className="p-3">{order.totalPrice.toLocaleString()}₫</td>
+                                        <td className="p-3">{new Date(order.orderDate).toLocaleString("vi-VN")}</td>
+                                        <td className="p-3">
+                                            <span className={`badge ${order.status === "pending"
+                                                ? "badge-pending"
+                                                : order.status === "completed"
+                                                    ? "badge-completed"
+                                                    : "badge-cancelled"
+                                                }`}>
+                                                {order.status === "pending"
+                                                    ? "Đang xử lý"
+                                                    : order.status === "completed"
+                                                        ? "Hoàn tất"
+                                                        : "Đã huỷ"}
+                                            </span>
+                                        </td>
+                                        <td className="p-3">
+                                            <Button size="sm" onClick={() => {
+                                                setSelectedOrder(order);
+                                                setShowModal(true);
+                                            }}>
+                                                Xem
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="mt-4 flex justify-between items-center">
+                        <span>Trang {page} / {totalPages}</span>
+                        <div className="space-x-2">
+                            <Button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>Trước</Button>
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                                <Button
+                                    key={num}
+                                    variant={num === page ? "active" : "default"}
+                                    onClick={() => setPage(num)}
+                                >
+                                    {num}
+                                </Button>
                             ))}
-                        </tbody>
-                    </table>
-                </div>
+                            <Button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Sau</Button>
+                        </div>
+                    </div>
+                </>
             )}
 
-            {/* Modal đơn giản */}
             {showModal && selectedOrder && (
                 <div className="modal-overlay">
                     <div className="modal-container">
@@ -178,13 +201,11 @@ export default function OrderListPage() {
                             </table>
                         </div>
 
-
                         <div className="mt-6 text-right">
                             <Button onClick={() => setShowModal(false)}>Đóng</Button>
                         </div>
                     </div>
                 </div>
-
             )}
         </div>
     );
