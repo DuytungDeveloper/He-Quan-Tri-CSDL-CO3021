@@ -1,0 +1,54 @@
+.badge {
+  border-radius: 16px;
+  padding: 3px 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+}
+
+.badge-pending {
+  background: linear-gradient(310deg, #fab534, #f64f39); /* cam đỏ */
+}
+
+.badge-completed {
+  background: linear-gradient(310deg, #22c55e, #16a34a); /* xanh lá */
+}
+
+.badge-cancelled {
+  background: linear-gradient(310deg, #64748b, #1e293b); /* xám than */
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px); /* mờ nền sau */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  max-width: 640px;
+  width: 100%;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
