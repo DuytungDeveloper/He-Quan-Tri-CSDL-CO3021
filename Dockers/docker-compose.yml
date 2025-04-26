@@ -29,5 +29,23 @@ services:
       start_interval: 1s
       retries: 30
 
+  postgres:
+    image: postgres:17.2
+    container_name: he-quan-tri-csdl-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=he_quan_tri_csdl
+      - POSTGRES_USER=${POSTGRES_USER:-admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-admin123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   mongodb_data:
+  postgres_data:
