@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "destructive";
+  variant?: "default" | "destructive" | "active";
   size?: "sm" | "md" | "lg";
 }
 
@@ -11,6 +11,7 @@ export function Button({ variant = "default", size = "md", className, ...props }
   const variants = {
     default: "bg-blue-600 text-white hover:bg-blue-700",
     destructive: "bg-red-600 text-white hover:bg-red-700",
+    active: "bg-green-600 text-white hover:bg-green-700",
   };
   const sizes = {
     sm: "px-2 py-1 text-sm",

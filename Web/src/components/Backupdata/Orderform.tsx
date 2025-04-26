@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,23 +7,40 @@ import { Card } from "@/components/ui/card/card";
 import { CardContent } from "@/components/ui/card/cardcontent";
 
 export default function CreateOrder() {
-    const [products, setProducts] = useState<{ id: number; name: string; price: number }[]>([]);
-    const [selectedProducts, setSelectedProducts] = useState<{ id: number; name: string; price: number; quantity: number }[]>([]);
-    const [customerName, setCustomerName] = useState("");
+    const [products, setProducts] = useState<{ id: string; name: string; price: number }[]>([]);
+    const [selectedProducts, setSelectedProducts] = useState<{ id: string; name: string; price: number; quantity: number }[]>([]);
+    const [customers, setCustomers] = useState<{ id: string; name: string }[]>([]);
+    const [selectedCustomerId, setSelectedCustomerId] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(1000000);
     const [categories] = useState<string[]>(["All", "Books", "Shoes", "Clothing", "Grocery", "Home", "Toys", "Computers", "Beauty", "Movies"]);
+    const [feedbackMessage, setFeedbackMessage] = useState("");
+    const [feedbackType, setFeedbackType] = useState<"success" | "error">("success");
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
-    // Gọi API và lưu dữ liệu vào state khi người dùng chọn loại sản phẩm hoặc giá
+    useEffect(() => {
+        const fetchCustomers = async () => {
+            try {
+                const res = await fetch("/api/customers");
+                const { data } = await res.json();
+                const transformed = data.map((item: any) => ({ id: item._id, name: item.username }));
+                setCustomers(transformed);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách khách hàng:", error);
+            }
+        };
+        fetchCustomers();
+    }, []);
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const url = `/api/product/getAllProduct?category=${selectedCategory}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
                 const response = await fetch(url);
                 const apiResponse = await response.json();
-                const transformedProducts = apiResponse.data.map((item: any, index: number) => ({
-                    id: index + 1,
+                const transformedProducts = apiResponse.data.map((item: any) => ({
+                    id: item._id,
                     name: item.name,
                     price: item.price,
                 }));
@@ -31,11 +49,10 @@ export default function CreateOrder() {
                 console.error("Lỗi khi gọi API:", error);
             }
         };
-
         fetchProducts();
     }, [selectedCategory, minPrice, maxPrice]);
 
-    const addProduct = (product: { id: number; name: string; price: number }) => {
+    const addProduct = (product: { id: string; name: string; price: number }) => {
         setSelectedProducts((prev) => {
             const existing = prev.find((p) => p.id === product.id);
             if (existing) {
@@ -45,145 +62,152 @@ export default function CreateOrder() {
         });
     };
 
-    const removeProduct = (id: number) => {
+    const removeProduct = (id: string) => {
         setSelectedProducts((prev) => prev.filter((p) => p.id !== id));
     };
 
     const totalPrice = selectedProducts.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
     const handleSubmit = async () => {
-        const orderData = {
-            customerName,
-            products: selectedProducts,
-            totalPrice,
-        };
-
-        // Gửi orderData lên server
+        if (!selectedCustomerId) {
+            setFeedbackType("error");
+            setFeedbackMessage("Vui lòng chọn khách hàng.");
+            setShowFeedbackModal(true);
+            return;
+        }
+        if (selectedProducts.length === 0) {
+            setFeedbackType("error");
+            setFeedbackMessage("Vui lòng chọn ít nhất một sản phẩm.");
+            setShowFeedbackModal(true);
+            return;
+        }
+        for (const product of selectedProducts) {
+            if (product.quantity <= 0) {
+                setFeedbackType("error");
+                setFeedbackMessage(`Sản phẩm "${product.name}" có số lượng không hợp lệ.`);
+                setShowFeedbackModal(true);
+                return;
+            }
+        }
+        const orderItems = selectedProducts.map(p => ({
+            productId: p.id,
+            productName: p.name,
+            quantity: p.quantity,
+            price: p.price,
+        }));
         try {
-            const response = await fetch("/api/product/getAllProduct", {
+            const response = await fetch("/api/place-order", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(orderData),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: selectedCustomerId, orderItems })
             });
-
-            const data = await response.json();
-            if (response.ok) {
-                alert("Đặt hàng thành công!");
-                console.log("Order response:", data); // Bạn có thể thêm logic xử lý dữ liệu ở đây
+            const result = await response.json();
+            if (response.ok && result.success) {
+                setFeedbackType("success");
+                setFeedbackMessage("Đặt hàng thành công!");
+                setSelectedProducts([]);
+                setSelectedCustomerId("");
             } else {
-                alert("Lỗi khi tạo đơn hàng: " + data.error);
+                setFeedbackType("error");
+                setFeedbackMessage("Lỗi khi đặt hàng: " + result.message);
             }
         } catch (error) {
-            console.error("Lỗi khi gửi yêu cầu:", error);
-            alert("Có lỗi xảy ra khi gửi yêu cầu");
+            setFeedbackType("error");
+            setFeedbackMessage("Đã xảy ra lỗi khi đặt hàng");
         }
+        setShowFeedbackModal(true);
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Tạo đơn hàng mới</h2>
+        <div className="max-w-6xl mx-auto p-8 bg-white shadow-xl rounded-2xl space-y-10">
+            <h2 className="text-3xl font-bold text-center text-primary">🛒 Tạo đơn hàng mới</h2>
 
-            {/* Tên khách hàng */}
-            <div className="mb-6">
-                <Input
-                    placeholder="Tên khách hàng"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label className="font-semibold">Khách hàng:</label>
+                    <select className="mt-2 w-full p-3 border rounded-lg focus:ring focus:ring-primary" value={selectedCustomerId} onChange={(e) => setSelectedCustomerId(e.target.value)}>
+                        <option value="">-- Chọn khách hàng --</option>
+                        {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                </div>
+
+                <div>
+                    <label className="font-semibold">Loại sản phẩm:</label>
+                    <select className="mt-2 w-full p-3 border rounded-lg focus:ring focus:ring-primary" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                        {categories.map((cat, i) => <option key={i} value={cat}>{cat}</option>)}
+                    </select>
+                </div>
             </div>
 
-            {/* Dropdown chọn loại sản phẩm */}
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold">Chọn loại sản phẩm:</h3>
-                <select
-                    className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                    {categories.map((category, index) => (
-                        <option key={index} value={category}>
-                            {category}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {/* Lọc theo giá */}
-            <div className="mb-6 flex space-x-4">
-                <div className="w-1/2">
+            <div className="flex flex-col md:flex-row items-end gap-4">
+                <div className="md:w-1/3">
+                    <label className="font-semibold block mb-1">Lọc theo giá:</label>
+                    <p className="text-sm text-gray-500">(Chọn khoảng giá sản phẩm)</p>
+                </div>
+                <div className="md:w-1/3">
                     <Input
                         type="number"
                         placeholder="Giá tối thiểu"
                         value={minPrice}
                         onChange={(e) => setMinPrice(parseFloat(e.target.value))}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
-                <div className="w-1/2">
+                <div className="md:w-1/3">
                     <Input
                         type="number"
                         placeholder="Giá tối đa"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(parseFloat(e.target.value))}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>
 
-            {/* Danh sách sản phẩm */}
+
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products.map((product) => (
-                    <div
-                        key={product.id}
-                        className="cursor-pointer hover:shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105"
-                        onClick={() => addProduct(product)}
-                    >
-                        <Card className="hover:border-blue-500">
-                            <CardContent className="text-center p-4 bg-gray-50 rounded-lg shadow-md">
-                                <h4 className="font-medium text-xl">{product.name}</h4>
-                                <p className="mt-2 text-lg font-semibold">{product.price}₫</p>
+                {products.map((p) => (
+                    <div key={p.id} className="cursor-pointer hover:shadow-xl transform hover:-translate-y-1 transition duration-200" onClick={() => addProduct(p)}>
+                        <Card className="hover:border-primary">
+                            <CardContent className="text-center p-5 bg-gray-50 rounded-lg">
+                                <h4 className="font-medium text-lg">{p.name}</h4>
+                                <p className="mt-2 text-base font-semibold text-green-600">{p.price.toLocaleString()}₫</p>
                             </CardContent>
                         </Card>
                     </div>
                 ))}
             </div>
 
-            {/* Giỏ hàng */}
-            <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-4">Giỏ hàng:</h3>
+            <div className="mt-10">
+                <h3 className="text-xl font-semibold mb-4">🛍️ Giỏ hàng:</h3>
                 {selectedProducts.length > 0 ? (
-                    <ul className="space-y-4">
+                    <ul className="space-y-3">
                         {selectedProducts.map((p) => (
-                            <li
-                                key={p.id}
-                                className="flex justify-between items-center border-b border-gray-200 pb-4"
-                            >
-                                <span className="text-lg">{p.name} x {p.quantity}</span>
-                                <Button size="sm" variant="destructive" onClick={() => removeProduct(p.id)}>
-                                    Xóa
-                                </Button>
+                            <li key={p.id} className="flex justify-between items-center border-b pb-3">
+                                <span className="text-base font-medium">{p.name} x {p.quantity}</span>
+                                <Button size="sm" variant="destructive" onClick={() => removeProduct(p.id)}>Xóa</Button>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p className="text-gray-500">Chưa có sản phẩm nào.</p>
+                    <p className="text-gray-500 italic">Chưa có sản phẩm nào trong giỏ.</p>
                 )}
             </div>
 
-            {/* Tổng tiền */}
-            <div className="mt-6 flex justify-between items-center">
-                <h3 className="text-xl font-semibold">Tổng tiền: {totalPrice}₫</h3>
-                <Button
-                    className="w-full md:w-auto mt-4 md:mt-0"
-                    onClick={handleSubmit}
-                    disabled={!customerName || selectedProducts.length === 0}
-                >
-                    Đặt hàng
-                </Button>
+            <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold text-blue-700">Tổng tiền: {totalPrice.toLocaleString()}₫</h3>
+                <Button size="lg" onClick={handleSubmit}>🚀 Đặt hàng</Button>
             </div>
+
+            {showFeedbackModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full text-center">
+                        <h2 className={`text-xl font-bold mb-4 ${feedbackType === "error" ? "text-red-600" : "text-green-600"}`}>
+                            {feedbackType === "error" ? "❌ Lỗi" : "✅ Thành công"}
+                        </h2>
+                        <p className="text-gray-700 mb-4">{feedbackMessage}</p>
+                        <Button onClick={() => setShowFeedbackModal(false)}>Đóng</Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
