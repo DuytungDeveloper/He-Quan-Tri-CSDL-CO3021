@@ -220,7 +220,7 @@ async function main() {
     await insertProducts();
     await insertOrders();
 
-    console.log("Database setup completed.");
+    console.log("Postgress Database setup completed.");
   } catch (error) {
     console.error("Error setting up the database:", error);
   } finally {

@@ -48,7 +48,7 @@ project-root/
 - Bước 3 :
 
   - Bật terminal : chạy lệnh `chmod +x setup.sh` và `./setup.sh` (Lệnh này dùng để tạo CSDL mongodb trên docker để sử dụng. Tk : admin, Password : admin123, đồng thời tạo dữ liệu mock và đánh index)
-  - ***Lưu ý*** : có thể chạy hơi lâu để yên cho chạy đến khi thấy dòng ```Data and indexes setup completed successfully!``` thì có thể tắt
+  - ***Lưu ý*** : có thể chạy hơi lâu để yên cho chạy đến khi thấy dòng ```Setup xong MongoDB``` hoặc ```Postgress Database setup completed.``` thì có thể tắt
 
 - Bước 4 :
 
