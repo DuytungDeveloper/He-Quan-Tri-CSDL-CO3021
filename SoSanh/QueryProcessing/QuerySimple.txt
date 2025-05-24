@@ -1,0 +1,154 @@
+🟢 a. INSERT
+
+PostgreSQL:
+
+INSERT INTO users (username, email, address)
+VALUES ('alice', 'alice@example.com', '123 Main St');
+
+MongoDB:
+
+db.users.insertOne({
+username: 'alice',
+email: 'alice@example.com',
+address: '123 Main St'
+});
+
+—
+
+🟢 b. DELETE
+
+PostgreSQL:
+
+DELETE FROM users WHERE email = 'alice@example.com';
+
+MongoDB:
+
+db.users.deleteOne({ email: 'alice@example.com' });
+
+—
+
+🟢 c. UPDATE
+
+PostgreSQL:
+
+UPDATE users
+SET address = '456 Elm St'
+WHERE username = 'alice';
+
+MongoDB:
+
+db.users.updateOne(
+{ username: 'alice' },
+{ $set: { address: '456 Elm St' } }
+);
+
+—
+
+🟢 d. QUERY with a single condition
+
+PostgreSQL:
+
+SELECT * FROM products WHERE price > 100;
+
+MongoDB:
+
+db.products.find({ price: { $gt: 100 } });
+
+—
+
+🟢 e. QUERY with a composite condition (AND, OR)
+
+PostgreSQL:
+
+SELECT * FROM products
+WHERE price > 100 AND stock < 50;
+
+MongoDB:
+
+db.products.find({
+$and: [
+{ price: { $gt: 100 } },
+{ stock: { $lt: 50 } }
+]
+});
+
+—
+
+🟢 f. QUERY with a JOIN (relational lookup)
+
+PostgreSQL:
+
+SELECT o.id, u.username, o.total_price
+FROM orders o
+JOIN users u ON o.user_id = u.id;
+
+MongoDB (using aggregation):
+
+db.orders.aggregate([
+{
+$lookup: {
+from: 'users',
+localField: 'userId',
+foreignField: '_id',
+as: 'userInfo'
+}
+},
+{ $unwind: '$userInfo' },
+{
+$project: {
+_id: 1,
+username: '$userInfo.username',
+total_price: '$totalPrice'
+}
+}
+]);
+
+—
+
+🟢 g. QUERY with a subquery
+
+PostgreSQL:
+
+SELECT * FROM products
+WHERE id IN (
+SELECT product_id FROM order_items WHERE quantity > 2
+);
+
+MongoDB (emulated with aggregation — not real subquery):
+
+const productIds = db.orders.aggregate([
+{ $unwind: "$orderItems" },
+{ $match: { "orderItems.quantity": { $gt: 2 } } },
+{
+$group: {
+_id: null,
+productIds: { $addToSet: "$orderItems.productId" }
+}
+}
+]).toArray()[0].productIds;
+
+db.products.find({ _id: { $in: productIds } });
+
+Note: MongoDB does not support true subqueries — it requires multiple queries or aggregation pipelines.
+
+—
+
+🟢 h. QUERY with aggregate functions
+
+PostgreSQL:
+
+SELECT category, COUNT(*) AS total_products, AVG(price) AS avg_price
+FROM products
+GROUP BY category;
+
+MongoDB:
+
+db.products.aggregate([
+{
+$group: {
+_id: '$category',
+total_products: { $sum: 1 },
+avg_price: { $avg: '$price' }
+}
+}
+]);

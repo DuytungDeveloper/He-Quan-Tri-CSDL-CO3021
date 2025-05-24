@@ -1,5 +1,5 @@
 https://chatgpt.com/share/680de3a4-be3c-8009-97bf-7f5e2d62df2a
-
+https://g.co/gemini/share/04400fa4a563
 
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,

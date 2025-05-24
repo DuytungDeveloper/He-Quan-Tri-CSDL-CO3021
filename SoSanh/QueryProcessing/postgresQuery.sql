@@ -15,6 +15,7 @@ JOIN users ON orders.user_id = users.id;
 
 
 -- 📜 3. UNION (combine names from users and products)
+EXPLAIN ANALYZE
 SELECT username AS name FROM users
 UNION
 SELECT name FROM products;
